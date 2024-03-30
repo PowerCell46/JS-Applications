@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Cookbook</title>
+    <link rel="stylesheet" href="static/site.css">
+    <link rel="stylesheet" href="static/recipe.css">
+    <link rel="stylesheet" href="static/form.css">
+    <script src="./src/nav.js"></script>
+    <script src="./src/login.js"></script>
+    <script src="./src/logout.js"></script>
+</head>
+
+<body onload="isAuthenticated()">
+    <header>
+        <h1>My Cookbook</h1>
+        <nav>
+                <a href="catalog.html">Catalog</a>
+            <div class="not-authenticated">
+                <a class="active">Login</a>
+                <a href="register.html">Register</a>
+            </div>
+            <div class="authenticated">
+                <a href="create.html">Create Recipe</a>
+                <a onclick="logoutUser()">Logout</a>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <article>
+            <h2>Login</h2>
+            <form onsubmit="loginUser(event)">
+                <label>E-mail: <input type="text" name="email"></label>
+                <label>Password: <input type="password" name="password"></label>
+                <input type="submit" value="Login">
+            </form>
+        </article>
+    </main>
+</body>
+
+</html>

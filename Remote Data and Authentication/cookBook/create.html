@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Cookbook</title>
+    <link rel="stylesheet" href="static/site.css">
+    <link rel="stylesheet" href="static/recipe.css">
+    <link rel="stylesheet" href="static/form.css">
+    <script src="./src/nav.js"></script>
+    <script src="./src/create.js"></script>
+</head>
+
+<body onload="isAuthenticated()">
+    <header>
+        <h1>My Cookbook</h1>
+        <nav>
+                <a href="catalog.html">Catalog</a>
+            <div class="not-authenticated">
+                <a href="login.html">Login</a>
+                <a href="register.html">Register</a>
+            </div>
+            <div class="authenticated">
+                <a class="active">Create Recipe</a>
+                <a onclick="logoutUser()">Logout</a>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <article>
+            <h2>New Recipe</h2>
+            <form onsubmit="createRecipie(event)">
+                <label>Name: <input type="text" name="name" placeholder="Recipe name"></label>
+                <label>Image: <input type="text" name="img" placeholder="Image URL"></label>
+                <label class="ml">Ingredients: <textarea name="ingredients" placeholder="Enter ingredients on separate lines"></textarea></label>
+                <label class="ml">Preparation: <textarea name="steps" placeholder="Enter preparation steps on separate lines"></textarea></label>
+                <input type="submit" value="Create Recipe">
+            </form>
+        </article>
+    </main>
+</body>
+
+</html>
