@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="./calendarData.js"></script>
+</head>
+
+<body>
+    <section id="years" class="yearsCalendar">
+        <table class="calendar">
+            <caption>2020 - 2023</caption>
+            <tr class="months">
+                <th class="month" colspan="4"></th>
+            </tr>
+
+            <tr class="days">
+                <td class="day">
+                    <div class="date" onclick="selectYear(event)">2020</div>
+                </td>
+                <td class="day">
+                    <div class="date" onclick="selectYear(event)">2021</div>
+                </td>
+            </tr>
+
+            <tr class="days">
+                <td class="day">
+                    <div class="date" onclick="selectYear(event)">2022</div>
+                </td>
+                <td class="day">
+                    <div class="date" onclick="selectYear(event)">2023</div>
+                </td>
+            </tr>
+
+        </table>
+    </section>
+
+</body>
+
+</html>
