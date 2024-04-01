@@ -4,7 +4,7 @@ function register() {
     <form
       id="register-form"
       class="text-center border border-light p-5"
-      onsubmit="registerUser(event)"
+      onsubmit="authenticateUser(event, 'Register')"
     >
       <div class="form-group">
         <label for="email">Email</label>
@@ -50,37 +50,4 @@ function register() {
 
 function registerHandler() {
   changeContent(register);
-}
-
-
-function registerUser(event) {
-  event.preventDefault();
-  const urlEndpoint = `http://localhost:3030/users/register`;
-
-  const data = new FormData(event.currentTarget);
-
-  const {email, password, repeatPassword} = Object.fromEntries(data);
-
-  if (email === '' || password.length < 6 || password !== repeatPassword) {
-    return alert("Invalid data!");
-  }
-
-  fetch(urlEndpoint, {method: "POST",
-  headers: {"Content-type": "application/json"},
-  body: JSON.stringify({email, password})})
-  .then(response => {
-    if (response.status === 200) {
-      return response.json();
-    } else {
-      throw new Error("An Error occurred!");
-    }
-  })
-  .then(data => {
-    sessionStorage.setItem("authToken", data.accessToken);
-    sessionStorage.setItem("userId", data._id);
-    sessionStorage.setItem("email", data.email);
-    updateHeader();
-    homeHandler();
-  })
-  .catch(err => console.log(err.message));
 }

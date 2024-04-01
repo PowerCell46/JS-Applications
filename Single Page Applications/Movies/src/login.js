@@ -4,7 +4,7 @@ function login() {
     <form
       id="login-form"
       class="text-center border border-light p-5"
-      onsubmit="loginUser(event)"
+      onsubmit="loginUser(event, 'Login')"
     >
       <div class="form-group">
         <label for="email">Email</label>
@@ -38,34 +38,4 @@ function login() {
 
 function loginHandler() {
   changeContent(login);
-}
-
-
-function loginUser(event) {
-  event.preventDefault();
-  const urlEndpoint = `http://localhost:3030/users/login`;
-
-  const data = new FormData(event.currentTarget);
-
-  const {email, password} = Object.fromEntries(data);
-
-  fetch(urlEndpoint, {method: "POST",
-  headers: {"Content-type": "application/json"},
-  body: JSON.stringify({email, password})})
-  .then(response => {
-    if (response.status === 200) {
-      return response.json();
-
-    } else {
-      throw new Error("An Errror occurred!");
-    }
-  })
-  .then(data => {
-    sessionStorage.setItem("authToken", data.accessToken);
-    sessionStorage.setItem("userId", data._id);
-    sessionStorage.setItem("email", data.email);
-    updateHeader();
-    homeHandler();
-  })
-  .catch(err => console.log(err.message));
 }
