@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Movies</title>
+    <link rel="icon" type="image/png" href="/static/favicon.ico" />
+    <link href="static/css/site.css" type="text/css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <script src="./src/utils.js"></script>
+    <script src="./src/navigation.js"></script>
+    <script src="./src/home.js"></script>
+    <script src="./src/register.js"></script>
+    <script src="./src/login.js"></script>
+    <script src="./src/createMovie.js"></script>
+    <script src="./src/movieDetails.js"></script>
+    <script src="./src/editMovie.js"></script>
+    <script src="./src/deleteMovie.js"></script>
+  </head>
+
+  <body onload="updateHeader(); getHomeMovies()">
+    <div class="container" id="container">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand text-light" onclick="homeHandler()">Movies</a>
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item user">
+            <a class="nav-link" id="welcome-msg">Welcome, email</a>
+          </li>
+          <li class="nav-item user">
+            <a class="nav-link" onclick="logoutUser()">Logout</a>
+          </li>
+          <li class="nav-item guest">
+            <a class="nav-link" onclick="loginHandler()">Login</a>
+          </li>
+          <li class="nav-item guest">
+            <a class="nav-link" onclick="registerHandler()">Register</a>
+          </li>
+        </ul>
+      </nav>
+
+      <section id="home-page" class="view-section">
+        <div
+          class="jumbotron jumbotron-fluid text-light"
+          style="background-color: #343a40"
+        >
+          <img
+            src="https://slicksmovieblog.files.wordpress.com/2014/08/cropped-movie-banner-e1408372575210.jpg"
+            class="img-fluid"
+            alt="Responsive image"
+            style="width: 150%; height: 200px"
+          />
+          <h1 class="display-4">Movies</h1>
+          <p class="lead">
+            Unlimited movies, TV shows, and more. Watch anywhere. Cancel
+            anytime.
+          </p>
+        </div>
+
+        <h1 class="text-center">Movies</h1>
+
+        <section id="add-movie-button" class="user">
+          <a onclick="createMovieHandler()" class="btn btn-warning">Add Movie</a>
+        </section>
+
+        <section id="movie">
+          <div class="mt-3">
+            <div class="row d-flex d-wrap">
+              <ul
+                id="movies-list"
+                class="card-deck d-flex justify-content-center"
+              >
+                <!-- movie list -->
+              </ul>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <footer class="page-footer font-small">
+        <div class="footer-copyright text-center py-3">
+          &copy; 2020
+          <a href="#" class="text-dark">JS Applications</a>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
