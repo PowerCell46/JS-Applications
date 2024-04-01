@@ -54,8 +54,8 @@ function registerHandler() {
 
 
 function registerUser(event) {
-  const urlEndpoint = `http://localhost:3030/users/register`;
   event.preventDefault();
+  const urlEndpoint = `http://localhost:3030/users/register`;
 
   const data = new FormData(event.currentTarget);
 

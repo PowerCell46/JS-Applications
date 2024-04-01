@@ -43,6 +43,7 @@ function createMovie() {
   `;
 }
 
+
 function createMovieHandler() {
   changeContent(createMovie);
 }
@@ -51,6 +52,7 @@ function createMovieHandler() {
 function createMovieSubmit(event) {
   event.preventDefault();
   const urlEndpoint = `http://localhost:3030/data/movies`;
+
   const data = new FormData(event.currentTarget);
   const {title, description, img} = Object.fromEntries(data);
 
@@ -78,5 +80,4 @@ function createMovieSubmit(event) {
   } else {
     return alert("You are not Authenticated!");
   }
-
 }

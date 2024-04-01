@@ -42,8 +42,8 @@ function loginHandler() {
 
 
 function loginUser(event) {
-  const urlEndpoint = `http://localhost:3030/users/login`;
   event.preventDefault();
+  const urlEndpoint = `http://localhost:3030/users/login`;
 
   const data = new FormData(event.currentTarget);
 
