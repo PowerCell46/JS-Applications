@@ -1,6 +1,10 @@
-function registerUser(event) {
+import { isAuthenticated } from "./nav.js";
+import { router } from "./routing.js";
+
+export function registerUser(event) {
     const urlEndpoint = `http://localhost:3030/users/register`;
     event.preventDefault();
+
     const data = new FormData(event.currentTarget);
     const { email, password, rePass } = Object.fromEntries(data);
 
@@ -9,16 +13,10 @@ function registerUser(event) {
     }
 
     fetch(urlEndpoint, { method: "Post", 
-    headers: { "Content-type": 'application/json' },
-    body: JSON.stringify({ email, password }) })
-    .then(response => {
-        if (response.status === 200) {
-            return response.json()
-        } else {
-            throw Error("Server error!");
-        }
-    })
-    .then(data => {
+        headers: { "Content-type": 'application/json' },
+        body: JSON.stringify({ email, password }) })
+    .then(response => response.json())
+    .then(data => { 
         localStorage.setItem("userId", data._id);
         localStorage.setItem("authToken", JSON.stringify(data.accessToken));
         isAuthenticated();

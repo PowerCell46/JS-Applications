@@ -1,16 +1,22 @@
+import { html, render } from '../node_modules/lit-html/lit-html.js';
+import { loginUser } from './login.js';
+import { registerUser } from './register.js';
+import { createRecipe } from './create.js';
+import { loadRecipies } from './app.js';
+
 function catalogView() {
-    return `
+    return html`
     <main>
         <p id="loader" style="color: white">Loading...</p>
     </main>`;
 }
 
 function loginView() {
-    return `
+    return html`
     <main>
     <article>
             <h2>Login</h2>
-            <form onsubmit="loginUser(event)">
+            <form @submit=${loginUser}>
                 <label>E-mail: <input type="text" name="email"></label>
                 <label>Password: <input type="password" name="password"></label>
                 <input type="submit" value="Login">
@@ -20,11 +26,11 @@ function loginView() {
 }
 
 function registerView() {
-    return `
+    return html`
     <main>
         <article>
             <h2>Register</h2>
-            <form onsubmit="registerUser(event)">
+            <form @submit=${registerUser}>
                 <label>E-mail: <input type="text" name="email"></label>
                 <label>Password: <input type="password" name="password"></label>
                 <label>Repeat: <input type="password" name="rePass"></label>
@@ -35,11 +41,11 @@ function registerView() {
 }
 
 function createRecipie() {
-    return `
+    return html`
     <main>
         <article>
             <h2>New Recipe</h2>
-            <form onsubmit="createRecipe(event)">
+            <form @submit=${createRecipe}>
             <label>Name: <input type="text" name="name" placeholder="Recipe name"></label>
                 <label>Image: <input type="text" name="img" placeholder="Image URL"></label>
                 <label class="ml">Ingredients: <textarea name="ingredients" placeholder="Enter ingredients on separate lines"></textarea></label>
@@ -57,10 +63,11 @@ const routerObj = {
     CreateRecipe: createRecipie
 }
 
-function router(event) {
+export function router(event) {
     const selectedView = typeof event !== "string" ? event.currentTarget.textContent.replace(' ', '') : event;
-    document.querySelector('main').remove();
-    document.querySelector('body').innerHTML += routerObj[selectedView]();
+
+    render(routerObj[selectedView](), document.querySelector("main"));
+
     selectedView === 'Catalog' ? loadRecipies() : null;
 
     const links = document.querySelectorAll("a");

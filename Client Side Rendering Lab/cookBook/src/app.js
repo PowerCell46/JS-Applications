@@ -1,8 +1,29 @@
 import { html, render } from '../node_modules/lit-html/lit-html.js';
 const main = document.querySelector("main");
+import { isAuthenticated } from './nav.js';
+import { router } from './routing.js';
+import { logoutUser} from './logout.js';
+import { deleteRecipe } from './delete.js';
+import { editRecipe } from './edit.js';
 
 
-function loadRecipies() {
+function loadHeader() {
+    const headerContent = html`
+        <a class="active" onclick="router(event)">Catalog</a>
+        <div class="not-authenticated">
+            <a @click=${router}>Login</a>
+            <a @click=${router}>Register</a>
+        </div>
+        <div class="authenticated">
+            <a @click=${router}>Create Recipe</a>
+            <a @click=${logoutUser}>Logout</a>
+        </div>`;
+    render(headerContent, document.querySelector("nav"));
+}
+
+loadHeader();
+
+export function loadRecipies() {
     const url = 'http://localhost:3030/data/recipes';
     fetch(url)
         .then(data => data.json())
@@ -26,7 +47,7 @@ function loadRecipies() {
 }
 
 loadRecipies();
-
+isAuthenticated();
 
 function getRecipeDescription(e) {
     let userId = localStorage.getItem("userId");
@@ -57,12 +78,11 @@ function getRecipeDescription(e) {
             </div>
             ${data._ownerId === userId ? html`<div style="width: 100%; text-align: center; padding: 10px;">
             <p style="display: none;">${data._id}</p> 
-            <button onclick="editRecipe(event)" id="edit-recipe" style="border-radius: 5px; margin: 5px; padding: 5px 10px;">&#9998; Edit</button>
-            <button onclick="deleteRecipe(event)" id="delete-recipe" style="border-radius: 5px; margin: 5px; padding: 5px 10px;">&#10006; Delete</button>
+            <button @click=${editRecipe} id="edit-recipe" style="border-radius: 5px; margin: 5px; padding: 5px 10px;">&#9998; Edit</button>
+            <button @click=${deleteRecipe} id="delete-recipe" style="border-radius: 5px; margin: 5px; padding: 5px 10px;">&#10006; Delete</button>
         </div>`:
         ""}
     </article>`;
-
             render(renderData, main);
         });
 }

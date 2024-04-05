@@ -1,4 +1,4 @@
-function deleteRecipe(event) {
+export function deleteRecipe(event) {
     const recipeId = event.target.parentNode.querySelector("p").textContent;
     const url = `http://localhost:3030/data/recipes/${recipeId}`;
     const token = JSON.parse(localStorage.getItem("authToken"));

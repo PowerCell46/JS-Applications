@@ -1,4 +1,4 @@
-function isAuthenticated() {
+export function isAuthenticated() {
     if (localStorage.getItem("authToken")) {
         document.querySelector(".authenticated").style.display = 'inline';
         document.querySelector(".not-authenticated").style.display = 'none';

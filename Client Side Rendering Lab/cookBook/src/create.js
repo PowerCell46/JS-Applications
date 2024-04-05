@@ -1,4 +1,6 @@
-function createRecipe(event) {
+import { router } from "./routing.js";
+
+export function createRecipe(event) {
     const urlEndpoint = 'http://localhost:3030/data/recipes';
     event.preventDefault();
     let token = localStorage.getItem("authToken");

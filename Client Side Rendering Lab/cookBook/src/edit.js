@@ -1,4 +1,4 @@
-function editRecipe(event) {
+export function editRecipe(event) {
     const recipeId = event.target.parentNode.querySelector("p").textContent;
     const url = `http://localhost:3030/data/recipes/${recipeId}`;
 
