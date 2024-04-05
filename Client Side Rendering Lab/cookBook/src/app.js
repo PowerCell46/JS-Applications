@@ -1,15 +1,16 @@
 import { html, render } from '../node_modules/lit-html/lit-html.js';
-const main = document.querySelector("main");
 import { isAuthenticated } from './nav.js';
 import { router } from './routing.js';
 import { logoutUser} from './logout.js';
 import { deleteRecipe } from './delete.js';
 import { editRecipe } from './edit.js';
 
+const main = document.querySelector("main");
+
 
 function loadHeader() {
     const headerContent = html`
-        <a class="active" onclick="router(event)">Catalog</a>
+        <a class="active" @click=${router}>Catalog</a>
         <div class="not-authenticated">
             <a @click=${router}>Login</a>
             <a @click=${router}>Register</a>
@@ -21,33 +22,37 @@ function loadHeader() {
     render(headerContent, document.querySelector("nav"));
 }
 
+
 loadHeader();
+
 
 export function loadRecipies() {
     const url = 'http://localhost:3030/data/recipes';
     fetch(url)
-        .then(data => data.json())
-        .then(data => {
-            const renderValue = Object.values(data).reverse().map(recipe => html`
-                <article @click=${getRecipeDescription} class="preview">
-                    <div class="title">
-                        <p style="display: none;">${recipe._id}</p>
-                        <h2>${recipe.name}</h2>
-                    </div>
-                    <div class="small">
-                        <img src="${recipe.img}">
-                    </div>
-                </article>
-            `)
-            render(renderValue, main)
-        })
-        .finally(() => {
-            document.querySelector('#loader').style.display = 'none';
-        });
+    .then(data => data.json())
+    .then(data => {
+        const renderValue = Object.values(data).reverse().map(recipe => html`
+            <article @click=${getRecipeDescription} class="preview">
+                <div class="title">
+                    <p style="display: none;">${recipe._id}</p>
+                    <h2>${recipe.name}</h2>
+                </div>
+                <div class="small">
+                    <img src="${recipe.img}">
+                </div>
+            </article>
+        `)
+        render(renderValue, main)
+    })
+    .finally(() => {
+        document.querySelector('#loader').style.display = 'none';
+    });
 }
+
 
 loadRecipies();
 isAuthenticated();
+
 
 function getRecipeDescription(e) {
     let userId = localStorage.getItem("userId");
@@ -55,10 +60,10 @@ function getRecipeDescription(e) {
 
     const url = `http://localhost:3030/data/recipes/${e.target.querySelector('p').textContent}`
     fetch(url)
-        .then(data => data.json())
-        .then(data => {
-            const renderData =
-                html`
+    .then(data => data.json())
+    .then(data => {
+        const renderData =
+            html`
     <article>
         <h2>${data.name}</h2>
         <div class="band">
@@ -83,6 +88,6 @@ function getRecipeDescription(e) {
         </div>`:
         ""}
     </article>`;
-            render(renderData, main);
+        render(renderData, main);
         });
 }

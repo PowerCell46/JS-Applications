@@ -1,5 +1,6 @@
 import { router } from "./routing.js";
 
+
 export function createRecipe(event) {
     const urlEndpoint = 'http://localhost:3030/data/recipes';
     event.preventDefault();
@@ -17,13 +18,7 @@ export function createRecipe(event) {
             headers: { "Content-type": 'application/json', "X-Authorization": token },
             body: JSON.stringify({ name, img, ingredients, steps })
         })
-        .then(response => {
-            if (response.status === 200 || response.status === 204) {
-                return response.json();
-            } else {
-                throw new Error("Server Error");
-            }
-        })
+        .then(response => response.json())
         .then(((data) => {
             // console.log(data);
             router("Catalog");

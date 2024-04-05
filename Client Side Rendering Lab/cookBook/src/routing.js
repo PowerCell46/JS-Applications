@@ -4,12 +4,32 @@ import { registerUser } from './register.js';
 import { createRecipe } from './create.js';
 import { loadRecipies } from './app.js';
 
+
+export function router(event) {
+    const selectedView = typeof event !== "string" ? event.currentTarget.textContent.replace(' ', '') : event;
+
+    render(routerObj[selectedView](), document.querySelector("main"));
+
+    selectedView === 'Catalog' ? loadRecipies() : null;
+
+    const links = document.querySelectorAll("a");
+    links.forEach(link => {
+        if (link.textContent.replace(' ', '') === selectedView) {
+            link.classList.add("active");
+        } else {
+            link.classList.remove("active");
+        }
+    });
+}
+
+
 function catalogView() {
     return html`
     <main>
         <p id="loader" style="color: white">Loading...</p>
     </main>`;
 }
+
 
 function loginView() {
     return html`
@@ -25,6 +45,7 @@ function loginView() {
     </main>`;
 }
 
+
 function registerView() {
     return html`
     <main>
@@ -39,6 +60,7 @@ function registerView() {
         </article>
     </main>`;
 }
+
 
 function createRecipie() {
     return html`
@@ -56,26 +78,10 @@ function createRecipie() {
     </main>`
 }
 
+
 const routerObj = {
     Catalog: catalogView,
     Login: loginView,
     Register: registerView,
     CreateRecipe: createRecipie
-}
-
-export function router(event) {
-    const selectedView = typeof event !== "string" ? event.currentTarget.textContent.replace(' ', '') : event;
-
-    render(routerObj[selectedView](), document.querySelector("main"));
-
-    selectedView === 'Catalog' ? loadRecipies() : null;
-
-    const links = document.querySelectorAll("a");
-    links.forEach(link => {
-        if (link.textContent.replace(' ', '') === selectedView) {
-            link.classList.add("active");
-        } else {
-            link.classList.remove("active");
-        }
-    });
 }

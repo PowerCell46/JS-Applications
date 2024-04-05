@@ -1,5 +1,6 @@
 import { isAuthenticated } from "./nav.js";
 
+
 export function logoutUser() {
     let token = localStorage.getItem("authToken");
 

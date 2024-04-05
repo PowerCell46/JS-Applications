@@ -1,6 +1,7 @@
 import { isAuthenticated } from "./nav.js";
 import { router } from "./routing.js";
 
+
 export function registerUser(event) {
     const urlEndpoint = `http://localhost:3030/users/register`;
     event.preventDefault();
