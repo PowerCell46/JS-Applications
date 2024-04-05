@@ -14,8 +14,10 @@ export function loginUser(event) {
         body: JSON.stringify({email, password})})
     .then(response =>response.json())
     .then(data => {
+        // console.log(data);
         localStorage.setItem("userId", data._id);
         localStorage.setItem("authToken", JSON.stringify(data.accessToken));
+        localStorage.setItem("userEmail", data.email);
         isAuthenticated();
         router("Catalog");
     })
