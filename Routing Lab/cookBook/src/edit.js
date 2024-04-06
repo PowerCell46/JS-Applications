@@ -1,8 +1,8 @@
 import {render, html} from '../node_modules/lit-html/lit-html.js';
+import page from "//unpkg.com/page/page.mjs";
 
 
-export function editRecipe(event) {
-    const recipeId = event.target.parentNode.querySelector("p").textContent;
+export function editRecipe(recipeId) {
     const url = `http://localhost:3030/data/recipes/${recipeId}`;
 
     fetch(url)
@@ -42,7 +42,7 @@ function submitEditRecipe(event) {
         .then(response => response.json())
         .then(data => {
             // console.log(data);
-            // router("Catalog");
+            page.redirect(`/recipe/${id}`);
         })
         .catch(err => console.log(err.message));
     

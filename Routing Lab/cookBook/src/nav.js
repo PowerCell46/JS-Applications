@@ -24,8 +24,6 @@ export function loadHeader() {
     render(headerContent, document.querySelector("nav"));
 }
 
-// window.location.href.split("/")[window.location.href.split("/").length - 1]
-
 
 export function isAuthenticated() {
     if (localStorage.getItem("authToken")) {

@@ -1,4 +1,10 @@
-import {html, render} from '../node_modules/lit-html/lit-html.js';
+import page from "//unpkg.com/page/page.mjs";
+import { html } from '../node_modules/lit-html/lit-html.js';
+
+
+export function deleteRecipeView() {
+    return html`<p style="color: whitesmoke;">Successful Deletion</p>`;
+}
 
 
 export function deleteRecipe(event) {
@@ -8,9 +14,7 @@ export function deleteRecipe(event) {
 
     if (token) {
         fetch(url, {method: "DELETE", headers: {"X-Authorization": token}})
-        .then(response => render(
-            html`<p style="color: whitesmoke;">Successful Deletion</p>`, 
-            document.querySelector("main")))
+        .then(response => page.redirect(`/recipe/delete/${recipeId}`))
         .catch(err => console.log(err.message));
     
     } else {

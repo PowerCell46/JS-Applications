@@ -25,7 +25,7 @@ export function loadRecipies() {
                     <h2>${recipe.name}</h2>
                 </div>
                 <div class="small">
-                    <img src="/Routing%20Lab/cookbook/${recipe.img}">
+                    <img src="${recipe.img}">
                 </div>
             </article>
         </a>
