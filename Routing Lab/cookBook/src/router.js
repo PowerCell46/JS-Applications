@@ -6,6 +6,7 @@ import { createRecipe } from './create.js';
 import { catalogView, loadRecipies } from "./home.js";
 import { isAuthenticated } from './nav.js';
 import { loadHeader } from './nav.js';
+import { getRecipeDescription } from "./details.js";
 
 
 const main = document.querySelector("main");
@@ -16,6 +17,13 @@ page('/', () => {
     loadRecipies();
 });
 
+
+page('/recipe/:id', (ctx) => {
+    const recipeId = ctx.params.id;
+    render(getRecipeDescription(recipeId), main);
+});
+
+
 page('/login', () => {
     render(loginView(), main);
 });
@@ -24,6 +32,7 @@ page('/login', () => {
 page('/register', () => {
     render(registerView(), main);
 });
+
 
 page('/create', () => {
     render(createRecipe(), main);

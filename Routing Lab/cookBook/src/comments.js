@@ -1,3 +1,6 @@
+import { html, render } from '../node_modules/lit-html/lit-html.js';
+
+
 export function showAddCommentDiv() {
     document.querySelector(".hidden-add-comment-div").style.setProperty('display', 'flex', 'important');
 }
