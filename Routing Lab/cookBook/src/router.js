@@ -33,7 +33,7 @@ page('/recipe/delete/:id', () => {
 
 page('/recipe/edit/:id', (ctx) => {
     const recipeId = ctx.params.id;
-render(editRecipe(recipeId), main);
+    render(editRecipe(recipeId), main);
 });
 
 
@@ -57,3 +57,6 @@ page.start();
 loadHeader();
 loadRecipies();
 isAuthenticated();
+
+
+// add the search functionality
