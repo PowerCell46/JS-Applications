@@ -14,5 +14,4 @@ const homeTemplate = () => html`
 
 export function showHomeView(context) {
     context.render(homeTemplate());
-
 } 

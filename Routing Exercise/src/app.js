@@ -36,7 +36,3 @@ function decorateContext(context, next) {
 function renderMain(content) {
     render(content, main);
 }
-
-
-
-
