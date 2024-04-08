@@ -28,7 +28,6 @@ export function editView(ctx) {
     `;
 
     render(view, main);
-
     });
 }
 
@@ -42,9 +41,7 @@ function editHandler(event) {
 
     put(`${urlEndpoints.teams}/${teamId}`, {name, logoUrl, description})
     .then(data => {
-        console.log(data);
-        console.log(`${urlEndpoints.teams}/${teamId}`);
-        page.redirect(`${urlEndpoints.teams}/${teamId}`);
+        page.redirect(`/teams/${data._id}`);
     })
     .catch(err => {
         const errContainer = document.querySelector(".error");

@@ -7,7 +7,7 @@ export function navigationHandler(ctx, next) {
     const view = html`
     <a href="/" class="site-logo">Team Manager</a>
         <nav>
-            <a href="/create" class="action">Browse Teams</a>
+            <a href="/browse" class="action">Browse Teams</a>
             ${!ctx.isAuthenticated ? html`
                 <a href="/login" class="action">Login</a>
                 <a href="/register" class="action">Register</a>`

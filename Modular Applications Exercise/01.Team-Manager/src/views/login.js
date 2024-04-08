@@ -41,7 +41,8 @@ function loginHandler(event) {
         localStorage.setItem("authToken", data.accessToken);
         localStorage.setItem("username", data.username);
         localStorage.setItem("email", data.email);
-        
+        localStorage.setItem("userId", data._id);
+                
         page.redirect("/myTeams");
     })
     .catch(err => {
