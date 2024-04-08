@@ -1,6 +1,3 @@
-import { isAuthenticated } from "./nav.js";
-
-
 export function logoutUser() {
     let token = localStorage.getItem("authToken");
 
@@ -12,7 +9,6 @@ export function logoutUser() {
         .then(() => {
             localStorage.removeItem("authToken");
             localStorage.removeItem("userId");
-            isAuthenticated();
         })
         .catch(err => console.error(err.message));
         

@@ -13,6 +13,10 @@ import { editRecipe } from "./edit.js";
 
 const main = document.querySelector("main");
 
+page(loadHeader);
+
+page(isAuthenticated);
+
 
 page('/', () => {
     render(catalogView(), main);
@@ -54,6 +58,4 @@ page('/create', () => {
 
 page.start();
 
-loadHeader();
 loadRecipies();
-isAuthenticated();
