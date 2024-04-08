@@ -7,6 +7,7 @@ import { navigationHandler } from "./views/navigation.js";
 import { createView } from "./views/create.js";
 import { browseView } from "./views/browse.js";
 import { detailsView } from "./views/details.js";
+import { editView } from "./views/edit.js";
 
 
 page(isAuthenticated);
@@ -30,6 +31,9 @@ page("/browse", browseView);
 
 
 page("/teams/:id", detailsView);
+
+
+page("/teams/edit/:id", editView);
 
 
 page("/myTeams", browseView);

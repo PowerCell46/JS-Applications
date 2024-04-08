@@ -36,8 +36,7 @@ function createHandler(event) {
 
     post(urlEndpoints.teams, {name, logoUrl, description})
     .then(data => {
-        console.log(data);
-        page.redirect("/");
+        page.redirect(`/teams/${data._id}`);
     })
     .catch(() => {
         const errContainer = document.querySelector(".error");

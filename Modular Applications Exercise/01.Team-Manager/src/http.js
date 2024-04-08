@@ -36,3 +36,22 @@ export function post(urlEndpoint, body) {
     })
     .catch(err => console.log(err));
 }
+
+
+export function put(urlEndpoint, body) {
+    const token = authenticationToken();
+
+    let headers = {"Content-type": "application/json"};
+
+    token ? headers["X-Authorization"] = token : null;
+
+    return fetch(urlEndpoint, {method: "PUT", headers: headers, body: JSON.stringify(body)})
+    .then(response => {
+        if (response.status === 200) {
+            return response.json();
+        }
+
+        return;
+    })
+    .catch(err => console.log(err));
+}

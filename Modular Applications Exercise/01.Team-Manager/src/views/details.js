@@ -17,7 +17,7 @@ export function detailsView(ctx) {
                         <p>${data.description}</p>
                         <span class="details">3 Members</span>
                         <div>
-                            <a href="#" class="action">Edit team</a>
+                            <a href="/teams/edit/${data._id}" class="action">Edit team</a>
                             <a href="#" class="action">Join team</a>
                             <a href="#" class="action invert">Leave team</a>
                             Membership pending. <a href="#">Cancel request</a>

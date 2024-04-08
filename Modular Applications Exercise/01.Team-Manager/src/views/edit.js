@@ -1,0 +1,56 @@
+import {html, render} from '../../node_modules/lit-html/lit-html.js';
+import { main, urlEndpoints } from "../constants.js";
+import { get, put } from '../http.js';
+import page from '../../node_modules/page/page.mjs';
+
+
+export function editView(ctx) {
+    const teamId = ctx.params.id;
+
+    get(`${urlEndpoints.teams}/${teamId}`)
+    .then(data => {
+        const view = html`
+        <section id="edit">
+        <article class="narrow">
+            <header class="pad-med">
+                <h1>Edit Team</h1>
+            </header>
+            <form @submit=${editHandler} id="edit-form" class="main-form pad-large">
+                <div style="display: none;" class="error">Error message.</div>
+                <input style="display: none;" type="text" name="teamId" value=${data._id}></label>
+                <label>Team name: <input type="text" name="name" value=${data.name}></label>
+                <label>Logo URL: <input type="text" name="logoUrl" value=${data.logoUrl}></label>
+                <label>Description: <textarea name="description">${data.description}</textarea></label>
+                <input class="action cta" type="submit" value="Save Changes">
+            </form>
+        </article>
+    </section>
+    `;
+
+    render(view, main);
+
+    });
+}
+
+
+function editHandler(event) {
+    event.preventDefault();
+
+    const data = new FormData(event.currentTarget);
+
+    const {name, logoUrl, description, teamId} = Object.fromEntries(data);
+
+    put(`${urlEndpoints.teams}/${teamId}`, {name, logoUrl, description})
+    .then(data => {
+        console.log(data);
+        console.log(`${urlEndpoints.teams}/${teamId}`);
+        page.redirect(`${urlEndpoints.teams}/${teamId}`);
+    })
+    .catch(err => {
+        const errContainer = document.querySelector(".error");
+
+        errContainer.style.display = "block";
+
+        errContainer.textContent = "An Error occurred!";
+    });
+}
