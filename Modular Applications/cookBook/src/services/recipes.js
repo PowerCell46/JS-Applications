@@ -12,3 +12,6 @@ export const postRecipe = (body) => httpService.post(urlEndpoints.recipes, body)
 
 
 export const getRecipeDetails = (recipeId) => httpService.get(`${urlEndpoints.recipes}/${recipeId}`);
+
+
+export const putRecipe = (recipeId, body) => httpService.put(`${urlEndpoints.recipes}/${recipeId}`, body);

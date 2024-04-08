@@ -23,3 +23,16 @@ export function post(urlEndpoint, body) {
         .then(response => response.json())
         .catch(err => console.log(err));
 }
+
+
+export function put(urlEndpoint, body) {
+    let headers = {"Content-type": "application/json"};
+
+    const authToken = localStorage.getItem("authToken");
+
+    authToken ? headers["X-Authorization"] = JSON.parse(authToken) : null;
+
+    return fetch(urlEndpoint, {"method": "PUT", headers: headers, body: JSON.stringify(body)})
+    .then(response => response.json())
+    .catch(err => console.log(err));
+}

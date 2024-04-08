@@ -1,4 +1,5 @@
 import {render, html} from '../node_modules/lit-html/lit-html.js';
+import { putRecipe } from './services/recipes.js';
 import page from "//unpkg.com/page/page.mjs";
 
 
@@ -31,22 +32,10 @@ function submitEditRecipe(event) {
     let {name, img, ingredients, steps, id} = Object.fromEntries(data);
     ingredients = ingredients.split("\n");
     steps = steps.split("\n");
-    const url = `http://localhost:3030/data/recipes/${id}`;
-    let token = JSON.parse(localStorage.getItem("authToken"));
 
-    if (token) {
-        fetch(url, {method: "PUT",
-        headers: { "Content-type": 'application/json', "X-Authorization": token },
-        body: JSON.stringify({name, img, ingredients, steps})
-        })
-        .then(response => response.json())
-        .then(data => {
-            // console.log(data);
-            page.redirect(`/recipe/${id}`);
-        })
-        .catch(err => console.log(err.message));
-    
-    } else {
-        alert("You are not authenticated!");
-    } 
+    putRecipe(id, {name, img, ingredients, steps})
+    .then(data => {
+        // console.log(data);
+        page.redirect(`/recipe/${id}`);
+    });
 }
