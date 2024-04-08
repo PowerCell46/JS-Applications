@@ -1,5 +1,6 @@
 import * as httpService from './http.js';
 import page from "//unpkg.com/page/page.mjs";
+import { urlEndpoints } from '../utils/constants.js';
 
 
 export function authenticateUser(urlEndpoint, email, password) {
@@ -12,4 +13,16 @@ export function authenticateUser(urlEndpoint, email, password) {
             page.redirect("/");
         })
         .catch(err => console.error(err.message));
+}
+
+
+export function unauthenticateUser() {
+    httpService.get(urlEndpoints.logout)
+    .then(() => {
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("userEmail");
+        page.redirect("/");
+    })
+    .catch(err => console.error(err.message));
 }

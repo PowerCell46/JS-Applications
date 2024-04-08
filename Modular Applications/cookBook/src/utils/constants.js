@@ -1,5 +1,8 @@
+const baseUrl = `http://localhost:3030`;
+
 export const urlEndpoints = {
-    'recipes': 'http://localhost:3030/data/recipes',
-    'register': 'http://localhost:3030/users/register',
-    'login': 'http://localhost:3030/users/login',
+    'recipes': `${baseUrl}/data/recipes`,
+    'register': `${baseUrl}/users/register`,
+    'login': `${baseUrl}/users/login`,
+    'logout': `${baseUrl}/users/logout`,
 }

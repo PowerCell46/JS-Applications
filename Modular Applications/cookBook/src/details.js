@@ -2,6 +2,7 @@ import page from "//unpkg.com/page/page.mjs";
 import { html, render } from '../node_modules/lit-html/lit-html.js';
 import { deleteRecipe } from './delete.js';
 import { showAddCommentDiv, loadRecipeComments, submitRecipeComment } from './comments.js';
+import { getRecipeDetails } from "./services/recipes.js";
 
 
 const main = document.querySelector("main");
@@ -11,9 +12,7 @@ export function getRecipeDescription(recipeId) {
     let userId = localStorage.getItem("userId");
     userId = userId ? userId : '';
 
-    const url = `http://localhost:3030/data/recipes/${recipeId}`
-    fetch(url)
-    .then(data => data.json())
+    getRecipeDetails(recipeId)
     .then(data => {
         const renderData =
             html`

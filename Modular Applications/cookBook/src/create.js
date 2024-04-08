@@ -1,4 +1,5 @@
 import { html } from '../node_modules/lit-html/lit-html.js';
+import { postRecipe } from './services/recipes.js';
 import page from "//unpkg.com/page/page.mjs";
 
 
@@ -20,30 +21,17 @@ export function createRecipe() {
 
 
 function createRecipeHandler(event) {
-    const urlEndpoint = 'http://localhost:3030/data/recipes';
     event.preventDefault();
-    let token = localStorage.getItem("authToken");
 
-    if (token) {
-        token = JSON.parse(token);
-        const data = new FormData(event.currentTarget);
-        let { name, img, ingredients, steps } = Object.fromEntries(data);
-        ingredients = ingredients.split("\n");
-        steps = steps.split("\n");
+    const data = new FormData(event.currentTarget);
+    let { name, img, ingredients, steps } = Object.fromEntries(data);
+    ingredients = ingredients.split("\n");
+    steps = steps.split("\n");
 
-        fetch(urlEndpoint, {
-            method: "POST",
-            headers: { "Content-type": 'application/json', "X-Authorization": token },
-            body: JSON.stringify({ name, img, ingredients, steps })
-        })
-        .then(response => response.json())
-        .then(((data) => {
-            // console.log(data);
-            page.redirect("/");
-        }))
-        .catch(err => console.error(err.message));
-
-    } else {
-        return alert("You are not authenticated!");
-    }
+    postRecipe({name, img, ingredients, steps})
+    .then(((data) => {
+        // console.log(data);
+        page.redirect("/");
+    }))
+    .catch(err => console.error(err.message));
 }
