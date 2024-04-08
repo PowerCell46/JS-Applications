@@ -1,8 +1,8 @@
 import page from "//unpkg.com/page/page.mjs";
-import { html, render } from '../node_modules/lit-html/lit-html.js';
+import { html, render } from '../../../node_modules/lit-html/lit-html.js';
 import { deleteRecipe } from './delete.js';
 import { showAddCommentDiv, loadRecipeComments, submitRecipeComment } from './comments.js';
-import { getRecipeDetails } from "./services/recipes.js";
+import { getRecipeDetails } from "../../services/recipes.js";
 
 
 const main = document.querySelector("main");

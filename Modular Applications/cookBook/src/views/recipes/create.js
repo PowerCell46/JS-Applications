@@ -1,5 +1,5 @@
-import { html } from '../node_modules/lit-html/lit-html.js';
-import { postRecipe } from './services/recipes.js';
+import { html } from '../../../node_modules/lit-html/lit-html.js';
+import { postRecipe } from '../../services/recipes.js';
 import page from "//unpkg.com/page/page.mjs";
 
 

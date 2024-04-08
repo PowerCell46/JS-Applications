@@ -1,5 +1,5 @@
-import { html, render } from '../node_modules/lit-html/lit-html.js';
-import { logoutUser} from './logout.js';
+import { html, render } from '../../../node_modules/lit-html/lit-html.js';
+import { logoutUser} from '../authentication/logout.js';
 
 
 export function loadHeader(ctx, next) {
@@ -39,4 +39,3 @@ export function isAuthenticated(ctx, next) {
 
     next();
 }
-

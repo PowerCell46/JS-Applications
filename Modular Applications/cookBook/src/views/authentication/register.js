@@ -1,6 +1,6 @@
-import { html } from '../node_modules/lit-html/lit-html.js';
-import { authenticateUser } from "./services/auth.js";
-import { urlEndpoints } from './utils/constants.js';
+import { html } from '../../../node_modules/lit-html/lit-html.js';
+import { authenticateUser } from "../../services/auth.js";
+import { urlEndpoints } from '../../utils/constants.js';
 
 
 export function registerView() {

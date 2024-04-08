@@ -15,3 +15,13 @@ export const getRecipeDetails = (recipeId) => httpService.get(`${urlEndpoints.re
 
 
 export const putRecipe = (recipeId, body) => httpService.put(`${urlEndpoints.recipes}/${recipeId}`, body);
+
+
+export const getRecipeComments = (recipeId) => httpService.get(`${urlEndpoints.comments}?where=recipeId%3D%22${recipeId}%22`);
+
+
+export const postRecipeComment = (body) => httpService.post(urlEndpoints.comments, body);
+
+
+export const delRecipe = (recipeId) => httpService.del(`${urlEndpoints.recipes}/${recipeId}`);
+

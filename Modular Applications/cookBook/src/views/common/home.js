@@ -1,5 +1,5 @@
-import { html, render } from '../node_modules/lit-html/lit-html.js';
-import { getAllRecipes, getSearchedRecipes } from './services/recipes.js';
+import { html, render } from '../../../node_modules/lit-html/lit-html.js';
+import { getAllRecipes, getSearchedRecipes } from '../../services/recipes.js';
 
 
 const main = document.querySelector("main");

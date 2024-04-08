@@ -1,13 +1,10 @@
-import {render, html} from '../node_modules/lit-html/lit-html.js';
-import { putRecipe } from './services/recipes.js';
+import { html, render } from '../../../node_modules/lit-html/lit-html.js';
+import { getRecipeDetails, putRecipe } from '../../services/recipes.js';
 import page from "//unpkg.com/page/page.mjs";
 
 
 export function editRecipe(recipeId) {
-    const url = `http://localhost:3030/data/recipes/${recipeId}`;
-
-    fetch(url)
-    .then(response => response.json())
+    getRecipeDetails(recipeId)
     .then(data => {
         const editView = html`
             <article>

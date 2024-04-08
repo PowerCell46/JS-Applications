@@ -1,14 +1,14 @@
 import page from "//unpkg.com/page/page.mjs";
 import { render } from '../node_modules/lit-html/lit-html.js';
-import { loginView } from "./login.js";
-import { registerView } from "./register.js";
-import { createRecipe } from './create.js';
-import { catalogView, loadRecipies } from "./home.js";
-import { isAuthenticated } from './nav.js';
-import { loadHeader } from './nav.js';
-import { getRecipeDescription } from "./details.js";
-import { deleteRecipeView } from "./delete.js";
-import { editRecipe } from "./edit.js";
+import { loginView } from "./views/authentication/login.js";
+import { registerView } from "./views/authentication/register.js";
+import { createRecipe } from './views/recipes/create.js';
+import { catalogView, loadRecipies } from "./views/common/home.js";
+import { isAuthenticated, loadHeader } from './views/common/nav.js';
+import { getRecipeDescription } from "./views/recipes/details.js";
+import { deleteRecipeView } from "./views/recipes/delete.js";
+import { editRecipe } from "./views/recipes/edit.js";
+import { authenticationForbidden, authenticationRequired } from "./middlewares/auth.js";
 
 
 const main = document.querySelector("main");
@@ -19,7 +19,7 @@ page(loadHeader);
 page(isAuthenticated);
 
 
-page('/', () => {
+page('/',() => {
     render(catalogView(), main);
     loadRecipies();
 });
@@ -31,28 +31,28 @@ page('/recipe/:id', (ctx) => {
 });
 
 
-page('/recipe/delete/:id', () => {
+page('/recipe/delete/:id', authenticationRequired, () => {
     render(deleteRecipeView(), main);
 });
 
 
-page('/recipe/edit/:id', (ctx) => {
+page('/recipe/edit/:id', authenticationRequired, (ctx) => {
     const recipeId = ctx.params.id;
     render(editRecipe(recipeId), main);
 });
 
 
-page('/login', () => {
+page('/login', authenticationForbidden, () => {
     render(loginView(), main);
 });
 
 
-page('/register', () => {
+page('/register', authenticationForbidden, () => {
     render(registerView(), main);
 });
 
 
-page('/create', () => {
+page('/create', authenticationRequired, () => {
     render(createRecipe(), main);
 });
 
