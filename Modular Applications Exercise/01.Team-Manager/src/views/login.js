@@ -6,21 +6,21 @@ import { post } from '../http.js';
 
 export function loginView() {
     const view = html`
-    <section id="login">
-                <article class="narrow">
-                    <header class="pad-med">
-                        <h1>Login</h1>
-                    </header>
-                    <form @submit=${loginHandler} id="login-form" class="main-form pad-large">
-                        <div style="display: none;" class="error">Error message.</div>
-                        <label>E-mail: <input type="text" name="email"></label>
-                        <label>Password: <input type="password" name="password"></label>
-                        <input class="action cta" type="submit" value="Sign In">
-                    </form>
-                    <footer class="pad-small">Don't have an account? <a href="#" class="invert">Sign up here</a>
-                    </footer>
-                </article>
-            </section>
+        <section id="login">
+            <article class="narrow">
+                <header class="pad-med">
+                    <h1>Login</h1>
+                </header>
+                <form @submit=${loginHandler} id="login-form" class="main-form pad-large">
+                    <div style="display: none;" class="error">Error message.</div>
+                    <label>E-mail: <input type="text" name="email"></label>
+                    <label>Password: <input type="password" name="password"></label>
+                    <input class="action cta" type="submit" value="Sign In">
+                </form>
+                <footer class="pad-small">Don't have an account? <a href="/register" class="invert">Sign up here</a>
+                </footer>
+            </article>
+        </section>
     `;
 
     render(view, main);
@@ -35,6 +35,18 @@ function loginHandler(event) {
     const data = new FormData(event.currentTarget);
 
     const { email, password } = Object.fromEntries(data);
+
+    if (email.length < 0 || !email.includes('@')) {
+        errContainer.style.display = "block";
+
+        return errContainer.textContent = "Invalid email address!";
+    }
+
+    if (password.length < 3) {
+        errContainer.style.display = "block";
+
+        return errContainer.textContent = "Password must be at least 3 chars!";
+    }
 
     post(urlEndpoints.login, {email, password})
     .then(data => {

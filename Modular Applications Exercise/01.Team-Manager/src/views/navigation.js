@@ -12,7 +12,7 @@ export function navigationHandler(ctx, next) {
                 <a href="/login" class="action">Login</a>
                 <a href="/register" class="action">Register</a>`
             : html`
-                <a href="#" class="action">My Teams</a>
+                <a href="/myTeams" class="action">My Teams</a>
                 <a @click=${logoutHandler} class="action">Logout</a>
             `}
             

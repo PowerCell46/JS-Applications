@@ -8,6 +8,7 @@ import { createView } from "./views/create.js";
 import { browseView } from "./views/browse.js";
 import { detailsView } from "./views/details.js";
 import { editView } from "./views/edit.js";
+import { myTeamsView } from "./views/myTeams.js";
 
 
 page(isAuthenticated);
@@ -36,6 +37,7 @@ page("/teams/:id", detailsView);
 page("/teams/edit/:id", editView);
 
 
-page("/myTeams", browseView);
+page("/myTeams", myTeamsView);
+
 
 page.start();
