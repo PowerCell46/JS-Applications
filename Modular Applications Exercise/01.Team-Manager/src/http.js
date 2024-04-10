@@ -56,6 +56,7 @@ export function put(urlEndpoint, body) {
     .catch(err => console.log(err));
 }
 
+
 export function del(urlEndpoint) {
     const token = authenticationToken();
 

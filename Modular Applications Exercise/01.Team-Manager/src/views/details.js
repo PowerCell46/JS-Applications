@@ -57,7 +57,8 @@ export function detailsView(ctx) {
                         class="tm-control action">Decline</a></li>
                         `)}
                     </ul>
-                </div>`
+                </div>
+                ` 
                 : null
                 }
         </article>
@@ -67,7 +68,6 @@ export function detailsView(ctx) {
     render(view, main);
         });        
     });
-
 }
 
 
