@@ -28,23 +28,39 @@ export function editView(ctx) {
     `;
 
     render(view, main);
-
     });
 }
 
 
 function editHandler(event) {
+    const errContainer = document.querySelector(".error");
     event.preventDefault();
 
     const data = new FormData(event.currentTarget);
 
     const {name, logoUrl, description, teamId} = Object.fromEntries(data);
 
+    if (name.length < 4) {
+        errContainer.style.display = "block";
+
+        return errContainer.textContent = "Name must be at least 4 chars!";
+    }
+
+    if (logoUrl.length === 0) {
+        errContainer.style.display = "block";
+
+        return errContainer.textContent = "Logo URL required!";
+    }
+
+    if (description.length < 10) {
+        errContainer.style.display = "block";
+
+        return errContainer.textContent = "Description must be at least 10 chars!";
+    }
+
     put(`${urlEndpoints.teams}/${teamId}`, {name, logoUrl, description})
     .then(data => {
-        console.log(data);
-        console.log(`${urlEndpoints.teams}/${teamId}`);
-        page.redirect(`${urlEndpoints.teams}/${teamId}`);
+        page.redirect(`/teams/${data._id}`);
     })
     .catch(err => {
         const errContainer = document.querySelector(".error");

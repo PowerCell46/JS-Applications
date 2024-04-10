@@ -3,4 +3,3 @@ export function authenticationToken() {
 
     return token ? token : null;
 }
-

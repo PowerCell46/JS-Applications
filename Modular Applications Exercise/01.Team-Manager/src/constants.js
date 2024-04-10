@@ -10,5 +10,5 @@ export const urlEndpoints = {
     "login": `${baseUrl}/users/login`,
     "logout": `${baseUrl}/users/logout`,
     "teams": `${baseUrl}/data/teams`,
-    
+    "members": `${baseUrl}/data/members`,    
 }

@@ -20,7 +20,7 @@ export function registerView() {
                         <label>Repeat: <input type="password" name="repass"></label>
                         <input class="action cta" type="submit" value="Create Account">
                     </form>
-                    <footer class="pad-small">Already have an account? <a href="#" class="invert">Sign in here</a>
+                    <footer class="pad-small">Already have an account? <a href="/login" class="invert">Sign in here</a>
                     </footer>
                 </article>
             </section>
@@ -45,12 +45,31 @@ function registerHandler(event) {
         return errContainer.textContent = "Password and Repeat Password must match!";
     }
 
+    if (username.length < 3) {
+        errContainer.style.display = "block";
+
+        return errContainer.textContent = "Username must be at least 3 chars!";
+    }
+
+    if (password.length < 3) {
+        errContainer.style.display = "block";
+
+        return errContainer.textContent = "Password must be at least 3 chars!";
+    }
+
+    if (email.length < 0 || !email.includes('@')) {
+        errContainer.style.display = "block";
+
+        return errContainer.textContent = "Invalid email address!";
+    }
+
     post(urlEndpoints.register, {email, username, password})
     .then(data => {
         localStorage.setItem("authToken", data.accessToken);
         localStorage.setItem("username", data.username);
         localStorage.setItem("email", data.email);
-        
+        localStorage.setItem("userId", data._id);
+               
         page.redirect("/myTeams");
     })
     .catch(err => {

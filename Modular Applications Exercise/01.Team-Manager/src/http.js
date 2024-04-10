@@ -55,3 +55,21 @@ export function put(urlEndpoint, body) {
     })
     .catch(err => console.log(err));
 }
+
+export function del(urlEndpoint) {
+    const token = authenticationToken();
+
+    let headers = {};
+
+    token ? headers["X-Authorization"] = token : null;
+
+    return fetch(urlEndpoint, {method: "DELETE", headers: headers})
+    .then(response => {
+        if (response.status === 200) {
+            return response.json();
+        }
+
+        return;
+    })
+    .catch(err => console.log(err));
+}

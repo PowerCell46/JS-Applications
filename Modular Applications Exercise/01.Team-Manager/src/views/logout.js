@@ -10,6 +10,8 @@ export function logoutHandler() {
         localStorage.removeItem("authToken");
         localStorage.removeItem("username");
         localStorage.removeItem("email");
+        localStorage.removeItem("userId");
+
         page.redirect("/");
     })
     .catch(err => {
