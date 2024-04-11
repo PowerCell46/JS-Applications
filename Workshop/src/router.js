@@ -20,11 +20,11 @@ page(loadHeader);
 
 page("/", homeView);
 
-page("/login", authForbidden, loginView);
+page("/login", loginView);
 
-page("/register", authForbidden, registerView);
+page("/register", registerView);
 
-page("/profile", authRequired, profileView);
+page("/profile", profileView);
 
 page("/details/:id", detailsView);
 

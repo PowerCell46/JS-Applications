@@ -1,91 +1,67 @@
 import {html, render} from '../../node_modules/lit-html/lit-html.js';
 import { main } from '../constants.js';
+import { addQuestion, addQuestionOption, deleteQuestionOption, submitQuestion } from '../handlers/questions.js';
 
 
 export function createView(ctx) {
-    const view = html`
+    let questions = [1];
+
+    function renderCreateView() {
+        const view = html`
     <section id="editor">
 
-<header class="pad-large">
-    <h1>New quiz</h1>
-</header>
+    <header class="pad-large">
+        <h1>New quiz</h1>
+    </header>
 
-<div class="pad-large alt-page">
-    <form>
-        <label class="editor-label layout">
-            <span class="label-col">Title:</span>
-            <input class="input i-med" type="text" name="title"></label>
-        <label class="editor-label layout">
-            <span class="label-col">Topic:</span>
-            <select class="input i-med" name="topic">
-                <option value="all">All Categories</option>
-                <option value="it">Languages</option>
-                <option value="hardware">Hardware</option>
-                <option value="software">Tools and Software</option>
-            </select>
-        </label>
-        <input class="input submit action" type="submit" value="Save">
-    </form>
-</div>
-
-<header class="pad-large">
-    <h2>Questions</h2>
-</header>
-
-<div class="pad-large alt-page">
-
-    <article class="editor-question">
-        <div class="layout">
-            <div class="question-control">
-                <button class="input submit action"><i class="fas fa-check-double"></i>
-                    Save</button>
-                <button class="input submit action"><i class="fas fa-times"></i> Cancel</button>
-            </div>
-            <h3>Question 1</h3>
-        </div>
+    <div class="pad-large alt-page">
         <form>
-            <textarea class="input editor-input editor-text" name="text"
-                placeholder="Enter question"></textarea>
+            <label class="editor-label layout">
+                <span class="label-col">Title:</span>
+                <input class="input i-med" type="text" name="title"></label>
+            <label class="editor-label layout">
+                <span class="label-col">Topic:</span>
+                <select class="input i-med" name="topic">
+                    <option value="all">All Categories</option>
+                    <option value="it">Languages</option>
+                    <option value="hardware">Hardware</option>
+                    <option value="software">Tools and Software</option>
+                </select>
+            </label>
+            <input class="input submit action" type="submit" value="Save">
+        </form>
+    </div>
+
+    <header class="pad-large">
+        <h2>Questions</h2>
+    </header>
+
+    <div id="questions-container" class="pad-large alt-page">
+
+    ${questions.map(q => createQuestionArticle(q, renderCreateView))}
+
+        <article class="editor-question">
             <div class="editor-input">
-
-                <label class="radio">
-                    <input class="input" type="radio" name="question-1" value="0" />
-                    <i class="fas fa-check-circle"></i>
-                </label>
-
-                <input class="input" type="text" name="answer-0" />
-                <button class="input submit action"><i class="fas fa-trash-alt"></i></button>
-            </div>
-            <div class="editor-input">
-
-                <label class="radio">
-                    <input class="input" type="radio" name="question-1" value="1" />
-                    <i class="fas fa-check-circle"></i>
-                </label>
-
-                <input class="input" type="text" name="answer-1" />
-                <button class="input submit action"><i class="fas fa-trash-alt"></i></button>
-            </div>
-            <div class="editor-input">
-
-                <label class="radio">
-                    <input class="input" type="radio" name="question-1" value="2" />
-                    <i class="fas fa-check-circle"></i>
-                </label>
-
-                <input class="input" type="text" name="answer-2" />
-                <button class="input submit action"><i class="fas fa-trash-alt"></i></button>
-            </div>
-            <div class="editor-input">
-                <button class="input submit action">
+                <button @click=${() => {addQuestion(questions, renderCreateView)}} class="input submit action">
                     <i class="fas fa-plus-circle"></i>
-                    Add answer
+                    Add question
                 </button>
             </div>
-        </form>
-    </article>
+        </article>
 
-    <article class="editor-question">
+    </div>
+
+    </section>
+        `;
+
+        render(view, main);
+    }
+
+    renderCreateView();
+}
+
+const flashingEl = html`
+<article class="editor-question">
         <div class="layout">
             <div class="question-control">
                 <button disabled class="input submit action"><i class="fas fa-check-double"></i>
@@ -136,9 +112,10 @@ export function createView(ctx) {
             </div>
         </form>
         <div class="loading-overlay working"></div>
-    </article>
+    </article>`;
 
-    <article class="editor-question">
+const finishedQuestion = html`
+ <article class="editor-question">
         <div class="layout">
             <div class="question-control">
                 <button class="input submit action"><i class="fas fa-edit"></i> Edit</button>
@@ -170,21 +147,45 @@ export function createView(ctx) {
                 <span>Answer 2</span>
             </div>
         </form>
-    </article>
+    </article>`;
 
+
+function createQuestionArticle(currentQuestionNumber) {
+    let choices = [0, 1, 2];
+
+    return html`
     <article class="editor-question">
-        <div class="editor-input">
-            <button class="input submit action">
-                <i class="fas fa-plus-circle"></i>
-                Add question
-            </button>
-        </div>
-    </article>
+       <div class="layout">
+           <div class="question-control">
+               <button @click=${submitQuestion} class="input submit action"><i class="fas fa-check-double"></i>
+                   Save</button>
+               <button class="input submit action"><i class="fas fa-times"></i> Cancel</button>
+           </div>
+           <h3>Question ${currentQuestionNumber}</h3>
+       </div>
+       <form>
+           <textarea class="input editor-input editor-text" name="text"
+               placeholder="Enter question"></textarea>
+           ${
+            choices.map(choice => html`
+                <div class="editor-input">
 
-</div>
+                    <label class="radio">
+                        <input class="input" type="radio" name="correct-answer" value="${choice}" />
+                        <i class="fas fa-check-circle"></i>
+                    </label>
 
-</section>
-`;
-
-    render(view, main);
+                    <input class="input" type="text" name="answer-${choice}" />
+                    <button @click=${deleteQuestionOption} class="input submit action"><i class="fas fa-trash-alt"></i></button>
+                </div>
+           `)}
+           <div class="editor-input">
+               <button @click=${(event) => addQuestionOption(event, choices)} class="input submit action">
+                   <i class="fas fa-plus-circle"></i>
+                   Add answer
+               </button>
+           </div>
+       </form>
+   </article>`
+   ;
 }
