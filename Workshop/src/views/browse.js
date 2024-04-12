@@ -1,6 +1,7 @@
 import {html, render} from '../../node_modules/lit-html/lit-html.js';
 import { main, urlEndpoints } from '../constants.js';
 import { get } from '../utils/http.js';
+import { filterHeader } from './common.js';
 import { quizPreviewArticle } from './home.js';
 
 
@@ -9,20 +10,7 @@ export function browseView(ctx) {
     .then(data => {
         const view = html`
         <section id="browse">
-        <header class="pad-large">
-            <form class="browse-filter">
-                <input class="input" type="text" name="query">
-                <select class="input" name="topic">
-                    <option value="all">All Categories</option>
-                    <option value="it">Languages</option>
-                    <option value="hardware">Hardware</option>
-                    <option value="software">Tools and Software</option>
-                </select>
-                <input class="input submit action" type="submit" value="Filter Quizes">
-            </form>
-            <h1>All quizes</h1>
-        </header>
-
+        ${filterHeader}
 
         <div class="pad-large alt-page">
 
@@ -33,7 +21,6 @@ export function browseView(ctx) {
     `;
 
     render(view, main);
-    
     });
 }
 
