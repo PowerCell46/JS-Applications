@@ -1,6 +1,6 @@
 import {html, render} from '../../node_modules/lit-html/lit-html.js';
 import { main } from '../constants.js';
-import { addQuestion, addQuestionOption, deleteQuestionOption, submitQuestion, submitQuiz } from '../handlers/questions.js';
+import { addQuestion, addQuestionOption, cancelQuestion, deleteQuestionOption, submitQuestion, submitQuiz } from '../handlers/questions.js';
 
 
 export function createView(ctx) {
@@ -59,63 +59,6 @@ export function createView(ctx) {
     renderCreateView();
 }
 
-const flashingEl = html`
-<article class="editor-question">
-        <div class="layout">
-            <div class="question-control">
-                <button disabled class="input submit action"><i class="fas fa-check-double"></i>
-                    Save</button>
-                <button disabled class="input submit action"><i class="fas fa-times"></i>
-                    Cancel</button>
-            </div>
-            <h3>Question 1</h3>
-        </div>
-        <form>
-            <textarea disabled class="input editor-input editor-text" name="text"
-                placeholder="Enter question"></textarea>
-            <div class="editor-input">
-
-                <label class="radio">
-                    <input disabled class="input" type="radio" name="question-1" value="0" />
-                    <i class="fas fa-check-circle"></i>
-                </label>
-
-                <input disabled class="input" type="text" name="answer-0" />
-                <button disabled class="input submit action"><i class="fas fa-trash-alt"></i></button>
-            </div>
-            <div class="editor-input">
-
-                <label class="radio">
-                    <input disabled class="input" type="radio" name="question-1" value="1" />
-                    <i class="fas fa-check-circle"></i>
-                </label>
-
-                <input disabled class="input" type="text" name="answer-1" />
-                <button disabled class="input submit action"><i class="fas fa-trash-alt"></i></button>
-            </div>
-            <div class="editor-input">
-
-                <label class="radio">
-                    <input disabled class="input" type="radio" name="question-1" value="2" />
-                    <i class="fas fa-check-circle"></i>
-                </label>
-
-                <input disabled class="input" type="text" name="answer-2" />
-                <button disabled class="input submit action"><i class="fas fa-trash-alt"></i></button>
-            </div>
-            <div class="editor-input">
-                <button disabled class="input submit action">
-                    <i class="fas fa-plus-circle"></i>
-                    Add answer
-                </button>
-            </div>
-        </form>
-        <div class="loading-overlay working"></div>
-    </article>`;
-
-const finishedQuestion = html`
- `;
-
 
 function createQuestionArticle(currentQuestionNumber) {
     let choices = [0, 1, 2];
@@ -126,7 +69,7 @@ function createQuestionArticle(currentQuestionNumber) {
            <div class="question-control">
                <button @click=${(event) => submitQuestion(event, currentQuestionNumber)} class="input submit action"><i class="fas fa-check-double"></i>
                    Save</button>
-               <button class="input submit action"><i class="fas fa-times"></i> Cancel</button>
+               <button @click=${cancelQuestion} class="input submit action"><i class="fas fa-times"></i> Cancel</button>
            </div>
            <h3>Question ${currentQuestionNumber}</h3>
        </div>
@@ -155,4 +98,28 @@ function createQuestionArticle(currentQuestionNumber) {
        </form>
    </article>`
    ;
+}
+
+
+export function finishedQuestionContent(text, answers, currentQuestionNumber) {
+    return `
+        <div class="layout">
+            <div class="question-control">
+                <button class="input submit action"><i class="fas fa-edit"></i> Edit</button>
+                <button class="input submit action"><i class="fas fa-trash-alt"></i> Delete</button>
+            </div>
+            <h3>Question ${currentQuestionNumber}</h3>
+        </div>
+        <form>
+            <p class="editor-input">${text}</p>
+            ${answers.map((a, i) => `
+                <div class="editor-input">
+                    <label class="radio">
+                        <input class="input" type="radio" name="question-${currentQuestionNumber}" value="${i}" disabled />
+                        <i class="fas fa-check-circle"></i>
+                    </label>
+                    <span>${a}</span>
+                </div>`
+            ).join("")}
+        </form>`;
 }

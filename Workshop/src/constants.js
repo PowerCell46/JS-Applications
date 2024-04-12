@@ -8,7 +8,7 @@ export const urlEndpoints = {
     "login": `${baseUrl}/login`,
     "register": `${baseUrl}/users`,
     "logout": `${baseUrl}/logout`,
-    "createQuiz": `${baseUrl}/classes/Quizzes`,
+    "quiz": `${baseUrl}/classes/Quizzes`,
     "createQuestion": `${baseUrl}/classes/Questions`
 }
 

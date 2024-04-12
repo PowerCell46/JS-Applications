@@ -1,5 +1,7 @@
 import { urlEndpoints } from "../constants.js";
 import { post } from "../utils/http.js";
+import { finishedQuestionContent } from "../views/create.js";
+
 
 export function addQuestion(questions, renderCreateView) {
     questions.push(questions[questions.length - 1] + 1);
@@ -59,7 +61,7 @@ export function submitQuestion(event, currentQuestionNumber) {
     post(urlEndpoints.createQuestion, {text, answers, correctIndex, quizId})
     .then(data => {
         console.log(data);
-        article.innerHTML = finishedQuestion(text, answers, currentQuestionNumber);
+        article.innerHTML = finishedQuestionContent(text, answers, currentQuestionNumber);
     })
     .catch(err => console.error(err));
 }
@@ -69,7 +71,7 @@ export function submitQuiz(event) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const { title, topic } = Object.fromEntries(data);
-    post(urlEndpoints.createQuiz, { title, topic })
+    post(urlEndpoints.quiz, { title, topic })
         .then(response => {
             sessionStorage.setItem("quizId", response.objectId);
             document.querySelector("#save-quiz").value = "Saved";
@@ -79,25 +81,7 @@ export function submitQuiz(event) {
 }
 
 
-function finishedQuestion(text, answers, currentQuestionNumber) {
-    return `
-        <div class="layout">
-            <div class="question-control">
-                <button class="input submit action"><i class="fas fa-edit"></i> Edit</button>
-                <button class="input submit action"><i class="fas fa-trash-alt"></i> Delete</button>
-            </div>
-            <h3>Question ${currentQuestionNumber}</h3>
-        </div>
-        <form>
-            <p class="editor-input">${text}</p>
-            ${answers.map((a, i) => `
-                <div class="editor-input">
-                    <label class="radio">
-                        <input class="input" type="radio" name="question-${currentQuestionNumber}" value="${i}" disabled />
-                        <i class="fas fa-check-circle"></i>
-                    </label>
-                    <span>${a}</span>
-                </div>`
-            ).join("")}
-        </form>`;
+export function cancelQuestion(event) {
+    // there is a problem with the indexing of the rest of the questions
+    event.target.parentNode.parentNode.parentNode.remove();
 }
