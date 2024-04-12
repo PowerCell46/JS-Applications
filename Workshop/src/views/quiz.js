@@ -1,12 +1,21 @@
 import {html, render} from '../../node_modules/lit-html/lit-html.js';
-import { main } from '../constants.js';
+import { main, urlEndpoints } from '../constants.js';
+import { get } from '../utils/http.js';
 
 
 export function quizView(ctx) {
-    const view = html`
+    const quizId = ctx.params.id;
+    console.log(quizId);
+    get(`${urlEndpoints.quiz}/${quizId}`)
+    .then(data => {
+        get(urlEndpoints.question)
+        .then(data => {
+            const questions = Object.values(data)[0].filter(q => q.quizId === quizId)
+            
+            const view = html`
                 <section id="quiz">
                 <header class="pad-large">
-                    <h1>Extensible Markup Language: Question 1 / 15</h1>
+                    <h1>Extensible Markup Language: Question 1 / ${questions.length}</h1>
                     <nav class="layout q-control">
                         <span class="block">Question index</span>
                         <a class="q-index q-current" href="#"></a>
@@ -71,4 +80,15 @@ export function quizView(ctx) {
     `;
 
     render(view, main);
+        });
+    });
+    
+}
+
+const a = {
+    "objectId": "Z86afuRxfI",
+    "title": "Python Exam",
+    "topic": "it",
+    "createdAt": "2024-04-12T06:55:44.646Z",
+    "updatedAt": "2024-04-12T06:55:44.646Z"
 }

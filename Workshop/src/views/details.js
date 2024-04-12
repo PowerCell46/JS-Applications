@@ -1,14 +1,18 @@
 import {html, render} from '../../node_modules/lit-html/lit-html.js';
-import { main } from '../constants.js';
+import { main, urlEndpoints } from '../constants.js';
+import { get } from '../utils/http.js';
 
 
 export function detailsView(ctx) {
-    const view = html`
+    const quizId = ctx.params.id;
+    get(`${urlEndpoints.quiz}/${quizId}`)
+    .then(data => {
+        const view = html`
     <section id="details">
                 <div class="pad-large alt-page">
                     <article class="details">
-                        <h1>Extensible Markup Language</h1>
-                        <span class="quiz-topic">A quiz by <a href="#">Peter</a> on the topic of Languages</span>
+                        <h1>${data.title}</h1>
+                        <span class="quiz-topic">A quiz by <a href="#">Peter</a> on the topic of ${data.topic}</span>
                         <div class="quiz-meta">
                             <span>15 Questions</span>
                             <span>|</span>
@@ -20,7 +24,7 @@ export function detailsView(ctx) {
                             maxime similique reprehenderit rem, officia vero at.</p>
 
                         <div>
-                            <a class="cta action" href="#">Begin Quiz</a>
+                            <a class="cta action" href="/quiz/${data.objectId}">Begin Quiz</a>
                         </div>
 
                     </article>
@@ -29,4 +33,14 @@ export function detailsView(ctx) {
     `;
 
     render(view, main);
+    });
+}
+
+
+const a = {
+    "objectId": "Z86afuRxfI",
+    "title": "Python Exam",
+    "topic": "it",
+    "createdAt": "2024-04-12T06:55:44.646Z",
+    "updatedAt": "2024-04-12T06:55:44.646Z"
 }

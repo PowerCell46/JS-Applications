@@ -58,7 +58,7 @@ export function submitQuestion(event, currentQuestionNumber) {
     }
     
     const article = event.currentTarget.parentNode.parentNode.parentNode;
-    post(urlEndpoints.createQuestion, {text, answers, correctIndex, quizId})
+    post(urlEndpoints.question, {text, answers, correctIndex, quizId})
     .then(data => {
         console.log(data);
         article.innerHTML = finishedQuestionContent(text, answers, currentQuestionNumber);
