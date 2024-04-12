@@ -7,7 +7,9 @@ const baseUrl = `https://parseapi.back4app.com`;
 export const urlEndpoints = {
     "login": `${baseUrl}/login`,
     "register": `${baseUrl}/users`,
-    "logout": `${baseUrl}/logout`
+    "logout": `${baseUrl}/logout`,
+    "createQuiz": `${baseUrl}/classes/Quizzes`,
+    "createQuestion": `${baseUrl}/classes/Questions`
 }
 
 export const authTokenName = `authToken`;
