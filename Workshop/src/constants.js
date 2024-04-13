@@ -9,7 +9,8 @@ export const urlEndpoints = {
     "register": `${baseUrl}/users`,
     "logout": `${baseUrl}/logout`,
     "quiz": `${baseUrl}/classes/Quizzes`,
-    "question": `${baseUrl}/classes/Questions`
+    "question": `${baseUrl}/classes/Questions`,
+    "solution": `${baseUrl}/classes/Solutions`
 }
 
 export const authTokenName = `authToken`;

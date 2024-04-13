@@ -1,6 +1,6 @@
-import {html, render} from '../../node_modules/lit-html/lit-html.js';
+import { html, render } from '../../node_modules/lit-html/lit-html.js';
 import { main, urlEndpoints } from '../constants.js';
-import { get } from '../utils/http.js';
+import { get, post } from '../utils/http.js';
 
 
 export function quizView(ctx) {
@@ -9,39 +9,34 @@ export function quizView(ctx) {
     ctx.userAnswers = {};
 
     get(`${urlEndpoints.quiz}/${quizId}`)
-    .then(data => {
-        get(urlEndpoints.question)
         .then(data => {
-            const questions = Object.values(data)[0].filter(q => q.quizId === quizId);
-            // console.log(questions);
-            
-            const view = html`
+            get(urlEndpoints.question)
+                .then(data => {
+                    const questions = Object.values(data)[0].filter(q => q.quizId === quizId);
+                    // console.log(questions);
+
+                    const view = html`
                 <section id="quiz">
                 <header id="header" class="pad-large">
                     
                 </header>
-                <div class="pad-large alt-page">
 
+                <div class="pad-large alt-page">
                     <article class="question">
                         
                     </article>
-
                 </div>
             </section>
-    `;
+            `;
 
-    render(view, main);
+                    render(view, main);
 
-    renderQuizQuestion(questions[0], questions, ctx);
-    renderQuestionsNavigation(questions, 0, ctx);
+                    renderQuizQuestion(questions[0], questions, ctx);
+                    renderQuestionsNavigation(questions, 0, ctx);
+                });
         });
-    });
-    
+
 }
-
-
-const b = html`
-`;
 
 
 function renderQuizQuestion(questionData, questions, ctx) {
@@ -64,49 +59,57 @@ function renderQuizQuestion(questionData, questions, ctx) {
     </div>
 
     <nav class="q-control">
-        <span class="block">12 questions remaining</span>
+        <div id="remaining-questions-div">
+            
+        </div>
         <a class="action" @click=${(e) => getPreviousQuestion(e, questions, questionData, ctx)}><i class="fas fa-arrow-left"></i> Previous</a>
         <a class="action" @click=${(e) => startOver(e, questions, ctx)}><i class="fas fa-sync-alt"></i> Start over</a>
         <div class="right-col">
             <a class="action" @click=${(e) => getNextQuestion(e, questions, questionData, ctx)}> Next <i class="fas fa-arrow-right"></i></a>
-            <a class="action" href=#>Submit answers</a>
+            <a class="action" @click=${(e) => submitQuizQuestions(e, questions, ctx)}>Submit answers</a>
         </div>
     </nav>`;
 
     const article = document.querySelector(".question");
 
     render(view, article);
+
+    renderRemaingQuestions(questions.length - Object.keys(ctx.userAnswers).length);
 }
+
 
 function renderQuestionsNavigation(questions, index, ctx) {
     const header = document.querySelector("#header");
-    const view = html`
-    <h1>Extensible Markup Language: Question ${index + 1} / ${questions.length}</h1>
-        <nav class="layout q-control">
-        <span class="block">Question index</span>
-            ${questions.map((q, i) => {
-                if (i === index) {
-                    return html`<a class="q-index q-current" href="javascript:void(0)"></a>`;
 
-                } else if (ctx.userAnswers[i]) {
-                    return html`<a class="q-index q-answered" @click=${(e) => selectQuestion(e, i, questions, ctx)}></a>`;
-                
-                } else {
-                    return html`<a class="q-index" @click=${(e) => selectQuestion(e, i, questions, ctx)}></a>`;
-                }
-            }
-        )}                    
-        </nav>
+    const view = html`
+        <h1>Extensible Markup Language: Question ${index + 1} / ${questions.length}</h1>
+            <nav class="layout q-control">
+            <span class="block">Question index</span>
+                ${questions.map((q, i) => {
+        if (i === index) {
+            return html`<a class="q-index q-current" href="javascript:void(0)"></a>`;
+
+        } else if (ctx.userAnswers[i] || ctx.userAnswers[i] === 0) {
+            return html`<a class="q-index q-answered" @click=${(e) => selectNavQuestion(e, i, questions, ctx)}></a>`;
+
+        } else {
+            return html`<a class="q-index" @click=${(e) => selectNavQuestion(e, i, questions, ctx)}></a>`;
+        }
+    }
+    )}                    
+            </nav>
     `;
 
     render(view, header);
 }
 
 
-function selectQuestion(event, index, questions, ctx) {
+function selectNavQuestion(event, index, questions, ctx) {
     event.preventDefault();
 
     renderQuizQuestion(questions[index], questions, ctx);
+
+    renderQuestionsNavigation(questions, index, ctx);
 }
 
 
@@ -118,6 +121,8 @@ function getNextQuestion(event, questions, currentQuestion, ctx) {
     index + 1 < questions.length ? index += 1 : index = 0;
 
     renderQuizQuestion(questions[index], questions, ctx);
+
+    renderQuestionsNavigation(questions, index, ctx);
 }
 
 
@@ -128,12 +133,27 @@ function getPreviousQuestion(event, questions, currentQuestion, ctx) {
 
     index - 1 > -1 ? index -= 1 : index = questions.length - 1;
 
-    renderQuizQuestion(questions[index], questions, ctx)
+    renderQuizQuestion(questions[index], questions, ctx);
+
+    renderQuestionsNavigation(questions, index, ctx);
 }
 
 
 function submitQuestion(questionIndex, questionData, index, ctx) {
-    ctx.userAnswers[questionIndex] = questionData.correctIndex === index;
+    ctx.userAnswers[questionIndex] = index;
+
+    const remainingQuestionsSpan = document.querySelector("#remaining-questions");
+    let remainingQuestions = parseInt(remainingQuestionsSpan.textContent, 10);
+    remainingQuestions = Math.max(0, remainingQuestions - 1);
+
+    renderRemaingQuestions(remainingQuestions);
+}
+
+
+function renderRemaingQuestions(remainingQuestions) {
+    const view = html`<span id="remaining-questions" class="block">${remainingQuestions} questions remaining</span>`;
+
+    render(view, document.querySelector("#remaining-questions-div"));
 }
 
 
@@ -143,4 +163,16 @@ function startOver(event, questions, ctx) {
     ctx.userAnswers = {};
 
     renderQuizQuestion(questions[0], questions, ctx);
+
+    renderQuestionsNavigation(questions, 0, ctx);
+}
+
+
+function submitQuizQuestions(event, questions, ctx) {
+    event.preventDefault();
+    let correct = 0;
+    Object.keys(ctx.userAnswers).forEach(index => questions[index].correctIndex === ctx.userAnswers[index] ? correct++ : null);
+
+    // post(urlEndpoints.solution, { correct, answers: ctx.userAnswers, quiz: ctx.params.id});
+    // finish it
 }
