@@ -24,7 +24,7 @@ page("/login", loginView);
 
 page("/register", registerView);
 
-page("/profile", profileView);
+page("/profile/:id", profileView);
 
 page("/details/:id", detailsView); // Quiz Details
 

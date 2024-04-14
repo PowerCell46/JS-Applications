@@ -1,5 +1,5 @@
 import { html, render } from '../../node_modules/lit-html/lit-html.js';
-import { main, urlEndpoints } from '../constants.js';
+import { main, topics, urlEndpoints } from '../constants.js';
 import { get } from '../utils/http.js';
 
 
@@ -22,7 +22,7 @@ export function homeView(ctx) {
             <div class="splash right-col"><i class="fas fa-clipboard-list"></i></div>
             <div class="glass welcome">
                 <h1>Welcome to Quiz Fever!</h1>
-                <p>Home to ${Object.values(quizzes)[0].length} quizes in 3 topics. <a href="/browse">Browse all quizes</a>.</p>
+                <p>Home to ${Object.values(quizzes)[0].length} quizes in ${Object.keys(topics).length} topics. <a href="/browse">Browse all quizes</a>.</p>
                 ${!ctx.isAuthenticated ? html`<a class="action cta" href="/login">Sign in to create a quiz</a>` : null}
             </div>
         </div>
@@ -61,7 +61,7 @@ export function quizPreviewArticle(quiz, numQuestions, numSolutions) {
             </div>
             <div class="left-col">
                 <h3>${quiz.title}</h3>
-                <span class="quiz-topic">Topic: ${quiz.topic}</span>
+            <span class="quiz-topic">Topic: ${topics[quiz.topic]}</span>
                 <div class="quiz-meta">
                     <span>${numQuestions} questions</span>
                     <span>|</span>

@@ -1,1 +1,1 @@
-# topics hardcoded?
+# topics hardcoded? - create and filter hardcored - the others are dynamic

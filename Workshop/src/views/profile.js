@@ -1,9 +1,14 @@
 import {html, render} from '../../node_modules/lit-html/lit-html.js';
-import { main } from '../constants.js';
+import { main, urlEndpoints } from '../constants.js';
+import { get } from '../utils/http.js';
 
 
 export function profileView(ctx) {
-    const view = html`
+    const userId = ctx.params.id;
+    
+    get(`${urlEndpoints.register}/${userId}`)
+    .then(data => {
+        const view = html`
     <section id="profile">
                 <header class="pad-large">
                     <h1>Profile Page</h1>
@@ -14,11 +19,11 @@ export function profileView(ctx) {
                         <h2>Profile Details</h2>
                         <p>
                             <span class="profile-info">Username:</span>
-                            Peter
+                            ${data.username}
                         </p>
                         <p>
                             <span class="profile-info">Email:</span>
-                            peter@mail.cx
+                            ${data.email}
                         </p>
                         <h2>Your Quiz Results</h2>
                         <table class="quiz-results">
@@ -80,4 +85,7 @@ export function profileView(ctx) {
     `;
 
     render(view, main);
+    })
+
+    
 }
