@@ -6,7 +6,7 @@ import { logoutHandler } from "../handlers/authentication.js";
 export function loadHeader(ctx, next) {
     const view = html`
     <nav>
-        <a class="logotype" href="/"><i class="fas fa-question-circle"></i><i
+        <a class="logotype" href="/summary/HYJfbk9Cnf"><i class="fas fa-question-circle"></i><i
                 class="merge fas fa-check-circle"></i><span>Quiz Fever</span></a>
         <div class="navigation">
             <a class="nav-link" href="/browse">Browse</a>

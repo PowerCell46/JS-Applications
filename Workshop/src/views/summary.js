@@ -21,7 +21,7 @@ export function summaryView(ctx) {
                                 <h2>${quizData.title}</h2>
 
                                 <div class="summary summary-top">
-                                    85%
+                                    ${((solutionData.correct / questions.length) * 100).toFixed(2)}%
                                 </div>
 
                                 <div class="summary">
@@ -59,20 +59,30 @@ function loadSummaryDetails(event, solutionData, questions) {
                     <i class="fas fa-check"></i>
                 </span>
                 <div class="right-col">
-                    <button class="action">See question</button>
+                    <button class="action" @click=${(e) => seeAnswerDetails(e, true)}>See question</button>
                 </div>
+
+                <div style="display: none;" id="answered-question-details">
+                    <p>${question.text}</p>
+
+                    ${question.answers.map((answer, i) => mapQuestionAnswers(answer, i, question, solutionData, index))}
+                </div>
+
             </article>`;
+
         } else {
             return html`
             <article class="preview">
-                <span class="s-incorrect">
-                    Question ${index + 1}
-                    <i class="fas fa-times"></i>
-                </span>
+                <span class="s-incorrect"> Question ${index + 1} <i class="fas fa-times"></i></span>
                 <div class="right-col">
-                    <button class="action">Reveal answer</button>
+                    <button @click=${(e) => seeAnswerDetails(e, false)} class="action">Reveal Answer</button>
                 </div>
-            </article>`
+
+                <div style="display: none;" id="answered-question-details">
+                    <p>${question.text}</p>
+                    ${question.answers.map((answer, i) => mapQuestionAnswers(answer, i, question, solutionData, index))}
+                </div>
+            </article>`;
         }
     });
     
@@ -81,85 +91,50 @@ function loadSummaryDetails(event, solutionData, questions) {
     render(view, answersDiv);
 }
 
-const a = {
-        "objectId": "OPXbHzEUPJ",
-        "correct": 0,
-        "answers": {
-            "0": 2
-        },
-        "quiz": "Z86afuRxfI",
-        "createdAt": "2024-04-14T07:26:15.050Z",
-        "updatedAt": "2024-04-14T07:26:15.050Z"
+
+function seeAnswerDetails(event, correctness) {
+    const hiddenDiv = event.currentTarget.parentNode.parentNode.querySelector("#answered-question-details");
+    const button = event.currentTarget;
+    if (
+    button.textContent === "Reveal Answer" ||
+    button.textContent === "See question"
+    ) {
+        hiddenDiv.style.display = "block";
+        button.textContent = "Close";
+    } else {
+        correctness ? button.textContent = "See question" : button.textContent = "Reveal Answer";
+        hiddenDiv.style.display = "none";
     }
+}
 
-    const b = {
-        "objectId": "Z86afuRxfI",
-        "title": "Python Exam",
-        "topic": "it",
-        "createdAt": "2024-04-12T06:55:44.646Z",
-        "updatedAt": "2024-04-12T06:55:44.646Z"
-    }
 
-    const c = {
-        "objectId": "QkMbiuuBGA",
-        "text": "Question",
-        "answers": [
-            "1",
-            "2",
-            "3"
-        ],
-        "correctIndex": 1,
-        "quizId": "Z86afuRxfI",
-        "createdAt": "2024-04-12T07:41:23.420Z",
-        "updatedAt": "2024-04-12T07:41:23.420Z"
-    }
-
-    const correct = html`
-    
-
-    <article class="preview">
-        <span class="s-correct">
-            Question 2
-            <i class="fas fa-check"></i>
-        </span>
-        <div class="right-col">
-            <button class="action">See question</button>
+function mapQuestionAnswers(answer, i, question, solutionData, index) {
+    if (i === question.correctIndex) {
+        return html `
+        <div class="s-answer">
+            <span class="s-correct">
+                ${answer}
+                <i class="fas fa-check"></i>
+                <strong>Correct answer</strong>
+            </span>
         </div>
-    </article>`
-
-        
-const wrongDetails = html`
-<article class="preview">
-                        <span class="s-incorrect">
-                            Question 4
-                            <i class="fas fa-times"></i>
-                        </span>
-                        <div class="right-col">
-                            <button class="action">Close</button>
-                        </div>
-
-                        <div>
-                            <p>
-                                This is the first question. Veniam unde beatae est ab quisquam quos officia, eius
-                                harum accusamus adipisci?
-                            </p>
-                            <div class="s-answer">
-                                <span class="s-incorrect">
-                                    This is answer 1
-                                    <i class="fas fa-times"></i>
-                                    <strong>Your choice</strong>
-                                </span>
-                            </div>
-                            <div class="s-answer">
-                                <span class="s-correct">
-                                    This is answer 2
-                                    <i class="fas fa-check"></i>
-                                    <strong>Correct answer</strong>
-                                </span>
-                            </div>
-                            <div class="s-answer">
-                                <span>
-                                    This is answer 3
-                                </span>
-                            </div>
-                    </article>`
+        `; 
+    } else if (solutionData.answers[index] === i) {
+        return html`
+        <div class="s-answer">
+            <span class="s-incorrect">
+                ${answer}
+                <i class="fas fa-times"></i>
+                <strong>Your choice</strong>
+            </span>
+        </div>
+        `;
+    } else {
+        return html`
+        <div class="s-answer">
+            <span>
+                ${answer}
+            </span>
+        </div>`;
+    }
+}
