@@ -3,6 +3,7 @@ import { main } from '../constants.js';
 
 
 export function summaryView(ctx) {
+    console.log(ctx.params.id);
     const view = html`
     <section id="summary">
                 <div class="hero layout">

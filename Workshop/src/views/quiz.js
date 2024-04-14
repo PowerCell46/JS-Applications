@@ -1,11 +1,11 @@
 import { html, render } from '../../node_modules/lit-html/lit-html.js';
 import { main, urlEndpoints } from '../constants.js';
 import { get, post } from '../utils/http.js';
+import page from '../../node_modules/page/page.mjs';
 
 
 export function quizView(ctx) {
     const quizId = ctx.params.id;
-    // console.log(quizId);
     ctx.userAnswers = {};
 
     get(`${urlEndpoints.quiz}/${quizId}`)
@@ -13,21 +13,20 @@ export function quizView(ctx) {
             get(urlEndpoints.question)
                 .then(data => {
                     const questions = Object.values(data)[0].filter(q => q.quizId === quizId);
-                    // console.log(questions);
 
                     const view = html`
-                <section id="quiz">
-                <header id="header" class="pad-large">
-                    
-                </header>
+                        <section id="quiz">
+                            <header id="header" class="pad-large">
+                                
+                            </header>
 
-                <div class="pad-large alt-page">
-                    <article class="question">
-                        
-                    </article>
-                </div>
-            </section>
-            `;
+                            <div class="pad-large alt-page">
+                                <article class="question">
+                                    
+                                </article>
+                            </div>
+                        </section>
+                    `;
 
                     render(view, main);
 
@@ -50,12 +49,17 @@ function renderQuizQuestion(questionData, questions, ctx) {
 
     <div>
         ${questionData.answers.map((a, i) => html`
-            <label class="q-answer radio">
-                <input class="input" @click=${() => submitQuestion(questionIndex, questionData, i, ctx)} type="radio" name="question-${i + 1}" value="${i}" />
-                <i class="fas fa-check-circle"></i>
-                ${a}
-            </label>
-        `)}
+        <label class="q-answer radio">
+            <input class="input" 
+                @click=${() => submitQuestion(questionIndex, questionData, i, ctx, questions)} 
+                type="radio" 
+                name="question-${questionIndex}" 
+                value="${i}"
+                .checked=${ctx.userAnswers[questionIndex] === i} />
+            <i class="fas fa-check-circle"></i>
+            ${a}
+        </label>
+    `)}
     </div>
 
     <nav class="q-control">
@@ -83,21 +87,19 @@ function renderQuestionsNavigation(questions, index, ctx) {
 
     const view = html`
         <h1>Extensible Markup Language: Question ${index + 1} / ${questions.length}</h1>
-            <nav class="layout q-control">
-            <span class="block">Question index</span>
+        <nav class="layout q-control">
+                <span class="block">Question index</span>
                 ${questions.map((q, i) => {
-        if (i === index) {
-            return html`<a class="q-index q-current" href="javascript:void(0)"></a>`;
-
-        } else if (ctx.userAnswers[i] || ctx.userAnswers[i] === 0) {
-            return html`<a class="q-index q-answered" @click=${(e) => selectNavQuestion(e, i, questions, ctx)}></a>`;
-
-        } else {
-            return html`<a class="q-index" @click=${(e) => selectNavQuestion(e, i, questions, ctx)}></a>`;
-        }
-    }
-    )}                    
-            </nav>
+                    if (i === index) {
+                        return html`<a class="q-index q-current" href="javascript:void(0)"></a>`;
+                    } else if (ctx.userAnswers[i] || ctx.userAnswers[i] === 0) {
+                        return html`<a class="q-index q-answered" @click=${(e) => selectNavQuestion(e, i, questions, ctx)}></a>`;
+                    } else {
+                        return html`<a class="q-index" @click=${(e) => selectNavQuestion(e, i, questions, ctx)}></a>`;
+                    }
+                }
+            )}                    
+        </nav>
     `;
 
     render(view, header);
@@ -139,7 +141,7 @@ function getPreviousQuestion(event, questions, currentQuestion, ctx) {
 }
 
 
-function submitQuestion(questionIndex, questionData, index, ctx) {
+function submitQuestion(questionIndex, questionData, index, ctx, questions) {
     ctx.userAnswers[questionIndex] = index;
 
     const remainingQuestionsSpan = document.querySelector("#remaining-questions");
@@ -147,6 +149,8 @@ function submitQuestion(questionIndex, questionData, index, ctx) {
     remainingQuestions = Math.max(0, remainingQuestions - 1);
 
     renderRemaingQuestions(remainingQuestions);
+
+    renderQuizQuestion(questionData, questions, ctx);
 }
 
 
@@ -170,9 +174,13 @@ function startOver(event, questions, ctx) {
 
 function submitQuizQuestions(event, questions, ctx) {
     event.preventDefault();
+
     let correct = 0;
     Object.keys(ctx.userAnswers).forEach(index => questions[index].correctIndex === ctx.userAnswers[index] ? correct++ : null);
 
-    // post(urlEndpoints.solution, { correct, answers: ctx.userAnswers, quiz: ctx.params.id});
-    // finish it
+    post(urlEndpoints.solution, { correct, answers: ctx.userAnswers, quiz: ctx.params.id})
+    .then(data => {
+        page.redirect(`/summary/${data.objectId}`);
+    })
+    .catch(err => console.error(err));
 }

@@ -32,7 +32,7 @@ page("/browse", browseView);
 
 page("/quiz/:id", quizView);
 
-page("/summary", summaryView);
+page("/summary/:id", summaryView);
 
 page("/create", createView);
 
