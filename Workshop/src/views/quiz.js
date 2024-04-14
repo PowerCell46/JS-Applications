@@ -177,8 +177,9 @@ function submitQuizQuestions(event, questions, ctx) {
 
     let correct = 0;
     Object.keys(ctx.userAnswers).forEach(index => questions[index].correctIndex === ctx.userAnswers[index] ? correct++ : null);
+    const userId = localStorage.getItem("userId");
 
-    post(urlEndpoints.solution, { correct, answers: ctx.userAnswers, quiz: ctx.params.id})
+    post(urlEndpoints.solution, { correct, answers: ctx.userAnswers, quiz: ctx.params.id, userId})
     .then(data => {
         page.redirect(`/summary/${data.objectId}`);
     })
