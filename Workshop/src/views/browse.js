@@ -7,20 +7,34 @@ import { quizPreviewArticle } from './home.js';
 
 export function browseView(ctx) {
     get(urlEndpoints.quiz)
-    .then(data => {
-        const view = html`
-        <section id="browse">
-        ${filterHeader}
-
-        <div class="pad-large alt-page">
-
-            ${Object.values(data)[0].map(quizPreviewArticle)}
+        .then(quizzes => {
+        
+        get(urlEndpoints.question)
+        .then(data => {
+            const questions = Object.values(data)[0];
             
-        </div>
-    </section>
-    `;
+            get(urlEndpoints.solution)
+            .then(data => {
+                const solutions = Object.values(data)[0];
+            const view = html`
+            <section id="browse">
+                ${filterHeader}
 
-    render(view, main);
-    });
+                <div class="pad-large alt-page">
+
+                ${Object.values(quizzes)[0]
+                .reverse()
+                .map(q => quizPreviewArticle(q, 
+                    questions.filter(question => question.quizId === q.objectId).length,
+                    solutions.filter(s => s.quiz === q.objectId).length
+                ))
+                }
+                </div>
+            </section>
+            `;
+
+            render(view, main);
+                    });
+                });
+            });
 }
-
