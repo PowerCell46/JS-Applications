@@ -26,15 +26,15 @@ page("/register", registerView);
 
 page("/profile", profileView);
 
-page("/details/:id", detailsView);
+page("/details/:id", detailsView); // Quiz Details
 
 page("/browse", browseView);
 
-page("/quiz/:id", quizView);
+page("/quiz/:id", quizView); // Submit Quiz
 
-page("/summary/:id", summaryView);
+page("/summary/:id", summaryView); // Quiz Result 
 
-page("/create", createView);
+page("/create", createView); // Create / Edit Quiz 
 
 
 page.start();
