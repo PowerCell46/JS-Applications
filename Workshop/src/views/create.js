@@ -1,12 +1,31 @@
 import {html, render} from '../../node_modules/lit-html/lit-html.js';
-import { main } from '../constants.js';
+import { main, topics, urlEndpoints } from '../constants.js';
 import { addQuestion, addQuestionOption, cancelQuestion, deleteQuestionOption, submitQuestion, submitQuiz } from '../handlers/questions.js';
+import { get } from '../utils/http.js';
 
 
 export function createView(ctx) {
+    let quizId = ctx.params.id;
     let questions = [1];
 
-    function renderCreateView() {
+    if (quizId !== "none") {
+        get(`${urlEndpoints.quiz}/${quizId}`)
+        .then(quizData => {
+            ctx.quizId = quizData.objectId;
+
+            get(urlEndpoints.question)
+            .then(questionsData => {
+                const questions = Object.values(questionsData)[0].filter(question => question.quizId === quizId);
+                quizData.questions = questions;
+                renderCreateView(quizData);
+
+                document.querySelector(".editor-question").innerHTML +=
+                quizData.questions.map((d, i) => finishedQuestionContent(d.text, d.answers, i + 1))
+            });
+        });
+    }
+
+    function renderCreateView(data) {
         const view = html`
     <section id="editor">
 
@@ -15,20 +34,23 @@ export function createView(ctx) {
     </header>
 
     <div class="pad-large alt-page">
-        <form @submit=${submitQuiz}>
+        <form @submit=${(e) => submitQuiz(e, ctx)}>
             <label class="editor-label layout">
                 <span class="label-col">Title:</span>
-                <input class="input i-med" type="text" name="title"></label>
+                <input ?disabled=${!!data} class="input i-med" type="text" value=${data ? data.title : ""} name="title"></label>
             <label class="editor-label layout">
                 <span class="label-col">Topic:</span>
-                <select class="input i-med" name="topic">
+                <select ?disabled=${!!data} class="input i-med" name="topic">
                     <option value="all">All Categories</option>
-                    <option value="it">Languages</option>
-                    <option value="hardware">Hardware</option>
-                    <option value="software">Tools and Software</option>
+                    <option value="it" ?selected=${data && data.topic === 'it'}>Languages</option>
+                    <option value="hardware" ?selected=${data && data.topic === 'hardware'}>Hardware</option>
+                    <option value="software" ?selected=${data && data.topic === 'software'}>Tools and Software</option>
                 </select>
             </label>
-            <input id="save-quiz" class="input submit action" type="submit" value="Save">
+            ${!data ? 
+                html`<input id="save-quiz" class="input submit action" type="submit" value="Save">`
+                : null
+            }
         </form>
     </div>
 
@@ -38,7 +60,10 @@ export function createView(ctx) {
 
     <div id="questions-container" class="pad-large alt-page">
 
-    ${questions.map(q => createQuestionArticle(q, renderCreateView))}
+    ${ data ? 
+        null :
+        questions.map(q => createQuestionArticle(q, renderCreateView))
+    }
 
         <article class="editor-question">
             <div class="editor-input">

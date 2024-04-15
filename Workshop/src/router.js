@@ -34,7 +34,7 @@ page("/quiz/:id", quizView); // Submit Quiz
 
 page("/summary/:id", summaryView); // Quiz Result 
 
-page("/create", createView); // Create / Edit Quiz 
+page("/create/:id", createView); // Create / Edit Quiz 
 
 
 page.start();

@@ -60,20 +60,19 @@ export function submitQuestion(event, currentQuestionNumber) {
     const article = event.currentTarget.parentNode.parentNode.parentNode;
     post(urlEndpoints.question, {text, answers, correctIndex, quizId})
     .then(data => {
-        console.log(data);
         article.innerHTML = finishedQuestionContent(text, answers, currentQuestionNumber);
     })
     .catch(err => console.error(err));
 }
 
 
-export function submitQuiz(event) {
+export function submitQuiz(event, ctx) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const { title, topic } = Object.fromEntries(data);
     post(urlEndpoints.quiz, { title, topic })
         .then(response => {
-            sessionStorage.setItem("quizId", response.objectId);
+            ctx.quizId = response.objectId;
             document.querySelector("#save-quiz").value = "Saved";
             document.querySelector("#save-quiz").disabled = true;
         })

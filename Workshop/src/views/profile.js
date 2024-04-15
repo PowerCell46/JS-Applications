@@ -83,7 +83,7 @@ export function profileView(ctx) {
                         <article class="preview layout">
                             <div class="right-col">
                                 <a class="action cta" href="/details/${q.objectId}">View Quiz</a>
-                                <a class="action cta" href="/create"><i class="fas fa-edit"></i></a>
+                                <a class="action cta" href="/create/${q.objectId}"><i class="fas fa-edit"></i></a>
                                 <a class="action cta" @click=${(e) => deleteQuiz(e, q.objectId)}><i class="fas fa-trash-alt"></i></a>
                             </div>
                             <div class="left-col">
