@@ -4,7 +4,8 @@ import { finishedQuestionContent } from "../views/create.js";
 
 
 export function addQuestion(questions, renderCreateView) {
-    questions.push(questions[questions.length - 1] + 1);
+    const h3s = document.querySelectorAll("h3");
+    questions.push(Number(h3s[h3s.length - 1].textContent.split(" ")[1]) + 1);
     renderCreateView();
 }
 
@@ -36,8 +37,8 @@ export function addQuestionOption(event, choices) {
 }
 
 
-export function submitQuestion(event, currentQuestionNumber) {
-    const quizId = sessionStorage.getItem("quizId");
+export function submitQuestion(event, currentQuestionNumber, ctx) {
+    const quizId = ctx.quizId;
     
     if (!quizId) {
         return alert("Specify to which quiz is the question related to!");
@@ -60,12 +61,12 @@ export function submitQuestion(event, currentQuestionNumber) {
     const article = event.currentTarget.parentNode.parentNode.parentNode;
     post(urlEndpoints.question, {text, answers, correctIndex, quizId})
     .then(data => {
-        article.innerHTML = finishedQuestionContent(text, answers, currentQuestionNumber);
+        article.innerHTML = finishedQuestionContent(text, answers, currentQuestionNumber, data.objectId);
     })
     .catch(err => console.error(err));
 }
 
-
+// move to quiz.js
 export function submitQuiz(event, ctx) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -83,4 +84,9 @@ export function submitQuiz(event, ctx) {
 export function cancelQuestion(event) {
     // there is a problem with the indexing of the rest of the questions
     event.target.parentNode.parentNode.parentNode.remove();
+}
+
+
+export function editQuestion(id) {
+    console.log(id);
 }

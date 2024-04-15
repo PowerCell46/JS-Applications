@@ -1,12 +1,12 @@
 import {html, render} from '../../node_modules/lit-html/lit-html.js';
 import { main, topics, urlEndpoints } from '../constants.js';
-import { addQuestion, addQuestionOption, cancelQuestion, deleteQuestionOption, submitQuestion, submitQuiz } from '../handlers/questions.js';
+import { addQuestion, addQuestionOption, cancelQuestion, deleteQuestionOption, editQuestion, submitQuestion, submitQuiz } from '../handlers/questions.js';
 import { get } from '../utils/http.js';
 
 
 export function createView(ctx) {
     let quizId = ctx.params.id;
-    let questions = [1];
+    let questions = [];
 
     if (quizId !== "none") {
         get(`${urlEndpoints.quiz}/${quizId}`)
@@ -19,8 +19,15 @@ export function createView(ctx) {
                 quizData.questions = questions;
                 renderCreateView(quizData);
 
-                document.querySelector(".editor-question").innerHTML +=
-                quizData.questions.map((d, i) => finishedQuestionContent(d.text, d.answers, i + 1))
+                const questionsContainer = document.querySelector("#questions-container");
+
+                const reversedQuestions = quizData.questions.slice().reverse();
+
+                reversedQuestions.forEach((d, i) => {
+                    const index = reversedQuestions.length - i;
+                    const htmlContent = `<article class="editor-question">` + finishedQuestionContent(d.text, d.answers, index, d.objectId) + `</article>`;
+                    questionsContainer.insertAdjacentHTML('afterbegin', htmlContent);
+                });                
             });
         });
     }
@@ -62,7 +69,7 @@ export function createView(ctx) {
 
     ${ data ? 
         null :
-        questions.map(q => createQuestionArticle(q, renderCreateView))
+        questions.map(q => createQuestionArticle(q, renderCreateView, ctx))
     }
 
         <article class="editor-question">
@@ -85,14 +92,14 @@ export function createView(ctx) {
 }
 
 
-function createQuestionArticle(currentQuestionNumber) {
+function createQuestionArticle(currentQuestionNumber, ctx) {
     let choices = [0, 1, 2];
 
     return html`
     <article class="editor-question">
        <div class="layout">
            <div class="question-control">
-               <button @click=${(event) => submitQuestion(event, currentQuestionNumber)} class="input submit action"><i class="fas fa-check-double"></i>
+               <button @click=${(event) => submitQuestion(event, currentQuestionNumber, ctx)} class="input submit action"><i class="fas fa-check-double"></i>
                    Save</button>
                <button @click=${cancelQuestion} class="input submit action"><i class="fas fa-times"></i> Cancel</button>
            </div>
@@ -126,12 +133,12 @@ function createQuestionArticle(currentQuestionNumber) {
 }
 
 
-export function finishedQuestionContent(text, answers, currentQuestionNumber) {
+export function finishedQuestionContent(text, answers, currentQuestionNumber, questionId) {
     return `
         <div class="layout">
             <div class="question-control">
-                <button class="input submit action"><i class="fas fa-edit"></i> Edit</button>
-                <button class="input submit action"><i class="fas fa-trash-alt"></i> Delete</button>
+            <button onclick="${() => console.log("WORKS")}" class="input submit action"><i class="fas fa-edit"></i> Edit</button>
+            <button class="input submit action"><i class="fas fa-trash-alt"></i> Delete</button>
             </div>
             <h3>Question ${currentQuestionNumber}</h3>
         </div>
