@@ -1,0 +1,161 @@
+import {html, render} from '../../node_modules/lit-html/lit-html.js';
+import { main, urlEndpoints } from '../constants.js';
+import { addQuestionOption, deleteQuestion, editQuestion } from '../handlers/questions.js';
+import { get } from '../utils/http.js';
+
+
+export function createEditView(ctx) {
+    let quizId = ctx.params.id;
+    let questions = [];
+
+    if (quizId !== "none") { // Edit view
+        
+        get(`${urlEndpoints.quiz}/${quizId}`)
+        .then(quizData => {
+        ctx.quizId = quizData.objectId;
+
+        get(urlEndpoints.question)
+        .then(questionsData => {
+            const questions = Object.values(questionsData)[0].filter(question => question.quizId === quizId);
+            quizData.questions = questions; // do i need it?
+
+            render(createEditViewTemplate(quizData), main);
+
+            const editQuestions = questions.map((question, index) => editQuestionTemplate(question, (index + 1)));
+
+            render(editQuestions, document.querySelector("#quesions-container"));
+        });
+    });
+
+    } else { // Create view
+        render(createEditViewTemplate(), main);
+
+        render(createQuestionTemplate(1), document.querySelector("#quesions-container"));
+    }
+
+} 
+
+function createEditViewTemplate(quizData) {
+    return html`
+    <section id="editor">
+
+    <header class="pad-large">
+        <h1>${quizData ? 'Edit quiz' : 'New quiz'}</h1>
+    </header>
+
+    <div class="pad-large alt-page">
+        <form>
+            <label class="editor-label layout">
+                <span class="label-col">Title:</span>
+                <input ?disabled=${!!quizData} class="input i-med" type="text" value=${quizData ? quizData.title : ""} name="title"></label>
+            <label class="editor-label layout">
+                <span class="label-col">Topic:</span>
+                <select ?disabled=${!!quizData} class="input i-med" name="topic">
+                    <option value="all">All Categories</option>
+                    <option value="it" ?selected=${quizData && quizData.topic === 'it'}>Languages</option>
+                    <option value="hardware" ?selected=${quizData && quizData.topic === 'hardware'}>Hardware</option>
+                    <option value="software" ?selected=${quizData && quizData.topic === 'software'}>Tools and Software</option>
+                </select>
+            </label>
+                <!-- Submit Quiz available only for the Create view -->
+            ${!quizData ? 
+                html`<input id="save-quiz" class="input submit action" type="submit" value="Save">`
+                : null
+            }
+        </form>
+    </div>
+
+        <header class="pad-large">
+            <h2>Questions</h2>
+        </header>
+
+        <div id="quesions-container" class="pad-large alt-page">
+        <!-- Questions - Edit And Create -->
+        </div>
+
+    </section>`;
+}
+
+
+function createQuestionTemplate(numberOfQuestions) {
+    return Array.from({ length: numberOfQuestions }, (_, index) => index + 1)
+    .map(index => html`
+    <article class="editor-question">
+            <div class="layout">
+                <div class="question-control">
+                    <button class="input submit action"><i class="fas fa-check-double"></i>
+                        Save</button>
+                    <button class="input submit action"><i class="fas fa-times"></i> Cancel</button>
+                </div>
+                <h3>Question ${index}</h3>
+            </div>
+            <form>
+                <textarea class="input editor-input editor-text" name="text"
+                    placeholder="Enter question"></textarea>
+                <div id="question-options">
+                    ${[0, 1, 2].map((i) => createQuestionOptionsTemplate(i, index))}
+                </div>
+                <div class="editor-input">
+                    <button @click=${addQuestionOption} class="input submit action">
+                        <i class="fas fa-plus-circle"></i>
+                        Add answer
+                    </button>
+                </div>
+            </form>
+        </article>
+    `);
+} 
+
+
+function editQuestionTemplate(questionData, questionNumber) {
+    return html`
+    <article class="editor-question">
+        <div class="layout">
+            <div class="question-control">
+                <button @click=${() => editQuestion(questionData.objectId)} class="input submit action"><i class="fas fa-edit"></i> Edit</button>
+                <button @click=${() => deleteQuestion(questionData.objectId)} class="input submit action"><i class="fas fa-trash-alt"></i> Delete</button>
+            </div>
+            <h3>Question ${questionNumber}</h3>
+        </div>
+        <form>
+            <p class="editor-input">${questionData.text}</p>
+            ${questionData.answers.map((answer, i) => html`
+                <div class="editor-input">
+                    <label class="radio">
+                        <input class="input" type="radio" name="question-${questionNumber}" value="${i}" disabled />
+                        <i class="fas fa-check-circle"></i>
+                    </label>
+                    <span>${answer}</span>
+                </div>`
+            )}
+        </div>
+        </form>
+    </article>`
+}
+
+
+const addQuestion = html`
+<article class="editor-question">
+        <div class="editor-input">
+            <button class="input submit action">
+                <i class="fas fa-plus-circle"></i>
+                Add question
+            </button>
+        </div>
+    </article>`
+
+
+export function createQuestionOptionsTemplate(i, index) {
+    return html`
+                <div class="editor-input">
+    
+                    <label class="radio">
+                        <input class="input" type="radio" name="question-${index}" value="${i}" />
+                        <i class="fas fa-check-circle"></i>
+                    </label>
+    
+                    <input class="input" type="text" name="answer-${i}" />
+                    <button class="input submit action"><i class="fas fa-trash-alt"></i></button>
+                </div>
+                `
+}

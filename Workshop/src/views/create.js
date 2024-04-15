@@ -30,66 +30,69 @@ export function createView(ctx) {
                 });                
             });
         });
+    } else {
+        renderCreateView();   
     }
 
-    function renderCreateView(data) {
-        const view = html`
-    <section id="editor">
+    
+function renderCreateView(data) {
+    const view = html`
+<section id="editor">
 
-    <header class="pad-large">
-        <h1>New quiz</h1>
-    </header>
+<header class="pad-large">
+    <h1>New quiz</h1>
+</header>
 
-    <div class="pad-large alt-page">
-        <form @submit=${(e) => submitQuiz(e, ctx)}>
-            <label class="editor-label layout">
-                <span class="label-col">Title:</span>
-                <input ?disabled=${!!data} class="input i-med" type="text" value=${data ? data.title : ""} name="title"></label>
-            <label class="editor-label layout">
-                <span class="label-col">Topic:</span>
-                <select ?disabled=${!!data} class="input i-med" name="topic">
-                    <option value="all">All Categories</option>
-                    <option value="it" ?selected=${data && data.topic === 'it'}>Languages</option>
-                    <option value="hardware" ?selected=${data && data.topic === 'hardware'}>Hardware</option>
-                    <option value="software" ?selected=${data && data.topic === 'software'}>Tools and Software</option>
-                </select>
-            </label>
-            ${!data ? 
-                html`<input id="save-quiz" class="input submit action" type="submit" value="Save">`
-                : null
-            }
-        </form>
-    </div>
+<div class="pad-large alt-page">
+    <form @submit=${(e) => submitQuiz(e, ctx)}>
+        <label class="editor-label layout">
+            <span class="label-col">Title:</span>
+            <input ?disabled=${!!data} class="input i-med" type="text" value=${data ? data.title : ""} name="title"></label>
+        <label class="editor-label layout">
+            <span class="label-col">Topic:</span>
+            <select ?disabled=${!!data} class="input i-med" name="topic">
+                <option value="all">All Categories</option>
+                <option value="it" ?selected=${data && data.topic === 'it'}>Languages</option>
+                <option value="hardware" ?selected=${data && data.topic === 'hardware'}>Hardware</option>
+                <option value="software" ?selected=${data && data.topic === 'software'}>Tools and Software</option>
+            </select>
+        </label>
+        ${!data ? 
+            html`<input id="save-quiz" class="input submit action" type="submit" value="Save">`
+            : null
+        }
+    </form>
+</div>
 
-    <header class="pad-large">
-        <h2>Questions</h2>
-    </header>
+<header class="pad-large">
+    <h2>Questions</h2>
+</header>
 
-    <div id="questions-container" class="pad-large alt-page">
+<div id="questions-container" class="pad-large alt-page">
 
-    ${ data ? 
-        null :
-        questions.map(q => createQuestionArticle(q, renderCreateView, ctx))
-    }
-
-        <article class="editor-question">
-            <div class="editor-input">
-                <button @click=${() => {addQuestion(questions, renderCreateView)}} class="input submit action">
-                    <i class="fas fa-plus-circle"></i>
-                    Add question
-                </button>
-            </div>
-        </article>
-    </div>
-
-    </section>
-        `;
-
-        render(view, main);
-    }
-
-    renderCreateView();
+${ data ? 
+    null :
+    questions.map(q => createQuestionArticle(q, renderCreateView, ctx))
 }
+
+    <article class="editor-question">
+        <div class="editor-input">
+            <button @click=${() => {addQuestion(questions, renderCreateView)}} class="input submit action">
+                <i class="fas fa-plus-circle"></i>
+                Add question
+            </button>
+        </div>
+    </article>
+</div>
+
+</section>
+    `;
+
+    render(view, main);
+}
+}
+
+
 
 
 function createQuestionArticle(currentQuestionNumber, ctx) {

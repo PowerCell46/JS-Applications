@@ -3,6 +3,7 @@ import { authRequired } from './middlewares/authForbidden.js';
 import { authForbidden } from './middlewares/authRequired.js';
 import { authMiddleware } from './middlewares/authentication.js';
 import { browseView } from './views/browse.js';
+import { createEditView } from './views/create&edit.js';
 import { createView } from './views/create.js';
 import { detailsView } from './views/details.js';
 import { loadHeader } from './views/header.js';
@@ -34,7 +35,7 @@ page("/quiz/:id", quizView); // Submit Quiz
 
 page("/summary/:id", summaryView); // Quiz Result 
 
-page("/create/:id", createView); // Create / Edit Quiz 
+page("/create/:id", createEditView); // Create / Edit Quiz 
 
 
 page.start();
