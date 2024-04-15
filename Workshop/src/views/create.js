@@ -1,6 +1,6 @@
 import {html, render} from '../../node_modules/lit-html/lit-html.js';
 import { main, topics, urlEndpoints } from '../constants.js';
-import { addQuestion, addQuestionOption, cancelQuestion, deleteQuestionOption, editQuestion, submitQuestion, submitQuiz } from '../handlers/questions.js';
+import { addQuestion, addQuestionOption, cancelQuestion, deleteQuestionOption, submitQuestion} from '../handlers/questions.js';
 import { get } from '../utils/http.js';
 
 
@@ -44,7 +44,7 @@ function renderCreateView(data) {
 </header>
 
 <div class="pad-large alt-page">
-    <form @submit=${(e) => submitQuiz(e, ctx)}>
+    <form >
         <label class="editor-label layout">
             <span class="label-col">Title:</span>
             <input ?disabled=${!!data} class="input i-med" type="text" value=${data ? data.title : ""} name="title"></label>

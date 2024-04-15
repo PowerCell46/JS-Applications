@@ -1,25 +1,24 @@
 import {html, render} from '../../node_modules/lit-html/lit-html.js';
 import { main, urlEndpoints } from '../constants.js';
-import { addQuestionOption, deleteQuestion, editQuestion } from '../handlers/questions.js';
+import { addQuestion, addQuestionOption, deleteQuestion, deleteQuestionOption, editQuestion } from '../handlers/questions.js';
+import { submitQuiz } from '../handlers/quizzes.js';
 import { get } from '../utils/http.js';
 
 
 export function createEditView(ctx) {
     let quizId = ctx.params.id;
-    let questions = [];
 
     if (quizId !== "none") { // Edit view
         
         get(`${urlEndpoints.quiz}/${quizId}`)
         .then(quizData => {
-        ctx.quizId = quizData.objectId;
 
         get(urlEndpoints.question)
         .then(questionsData => {
             const questions = Object.values(questionsData)[0].filter(question => question.quizId === quizId);
             quizData.questions = questions; // do i need it?
 
-            render(createEditViewTemplate(quizData), main);
+            render(createEditViewTemplate(ctx, quizData), main);
 
             const editQuestions = questions.map((question, index) => editQuestionTemplate(question, (index + 1)));
 
@@ -28,14 +27,14 @@ export function createEditView(ctx) {
     });
 
     } else { // Create view
-        render(createEditViewTemplate(), main);
+        render(createEditViewTemplate(ctx), main);
 
         render(createQuestionTemplate(1), document.querySelector("#quesions-container"));
     }
 
 } 
 
-function createEditViewTemplate(quizData) {
+function createEditViewTemplate(ctx, quizData) {
     return html`
     <section id="editor">
 
@@ -44,7 +43,7 @@ function createEditViewTemplate(quizData) {
     </header>
 
     <div class="pad-large alt-page">
-        <form>
+        <form @submit=${(e) => submitQuiz(e, ctx)}>
             <label class="editor-label layout">
                 <span class="label-col">Title:</span>
                 <input ?disabled=${!!quizData} class="input i-med" type="text" value=${quizData ? quizData.title : ""} name="title"></label>
@@ -77,7 +76,7 @@ function createEditViewTemplate(quizData) {
 }
 
 
-function createQuestionTemplate(numberOfQuestions) {
+export function createQuestionTemplate(numberOfQuestions) {
     return Array.from({ length: numberOfQuestions }, (_, index) => index + 1)
     .map(index => html`
     <article class="editor-question">
@@ -96,12 +95,20 @@ function createQuestionTemplate(numberOfQuestions) {
                     ${[0, 1, 2].map((i) => createQuestionOptionsTemplate(i, index))}
                 </div>
                 <div class="editor-input">
-                    <button @click=${addQuestionOption} class="input submit action">
+                    <button @click=${(e) => addQuestionOption(e, index)} class="input submit action">
                         <i class="fas fa-plus-circle"></i>
                         Add answer
                     </button>
                 </div>
             </form>
+        </article>
+        <article id="add-question-article" class="editor-question">
+            <div class="editor-input">
+                <button @click=${() => addQuestion()} class="input submit action">
+                    <i class="fas fa-plus-circle"></i>
+                    Add question
+                </button>
+            </div>
         </article>
     `);
 } 
@@ -133,29 +140,17 @@ function editQuestionTemplate(questionData, questionNumber) {
     </article>`
 }
 
-
-const addQuestion = html`
-<article class="editor-question">
-        <div class="editor-input">
-            <button class="input submit action">
-                <i class="fas fa-plus-circle"></i>
-                Add question
-            </button>
-        </div>
-    </article>`
-
-
 export function createQuestionOptionsTemplate(i, index) {
     return html`
-                <div class="editor-input">
-    
-                    <label class="radio">
-                        <input class="input" type="radio" name="question-${index}" value="${i}" />
-                        <i class="fas fa-check-circle"></i>
-                    </label>
-    
-                    <input class="input" type="text" name="answer-${i}" />
-                    <button class="input submit action"><i class="fas fa-trash-alt"></i></button>
-                </div>
-                `
+        <div class="editor-input">
+
+            <label class="radio">
+                <input class="input" type="radio" name="question-${index}" value="${i}" />
+                <i class="fas fa-check-circle"></i>
+            </label>
+
+            <input class="input" type="text" name="answer-${i}" />
+            <button @click=${deleteQuestionOption} class="input submit action"><i class="fas fa-trash-alt"></i></button>
+        </div>
+        `;
 }
