@@ -4,9 +4,6 @@ left things to do
 - edit question
 - add question to the edit question view
 
-- remove option -- мисли с ID-тата как да не се прецакат нещата
-- cancel question
-
 - security - кой какво може да аксесва
 - code cleanup
 - deploy

@@ -20,7 +20,7 @@ export function createEditView(ctx) {
 
             render(createEditViewTemplate(ctx, quizData), main);
 
-            const editQuestions = questions.map((question, index) => editQuestionTemplate(question, (index + 1)));
+            const editQuestions = questions.map((question, index) => editQuestionTemplate(question, (index + 1), ctx));
 
             render(editQuestions, document.querySelector("#quesions-container"));
         });
@@ -76,7 +76,7 @@ function createEditViewTemplate(ctx, quizData) {
 }
 
 
-export function createQuestionTemplate(numberOfQuestions, ctx) {
+export function createQuestionTemplate(numberOfQuestions, ctx, data) {
     return Array.from({ length: numberOfQuestions }, (_, index) => index + 1)
     .map(index => html`
     <article class="editor-question">
@@ -90,7 +90,7 @@ export function createQuestionTemplate(numberOfQuestions, ctx) {
             </div>
             <form>
                 <textarea class="input editor-input editor-text" name="text"
-                    placeholder="Enter question"></textarea>
+                    placeholder="Enter question">${data ? data.text : ""}</textarea>
                 <div id="question-options">
                     ${[0, 1, 2].map((i) => createQuestionOptionsTemplate(i, index))}
                 </div>
@@ -114,12 +114,12 @@ export function createQuestionTemplate(numberOfQuestions, ctx) {
 } 
 
 
-export function editQuestionTemplate(questionData, questionNumber) {
+export function editQuestionTemplate(questionData, questionNumber, ctx) {
     return html`
     <article class="editor-question">
         <div class="layout">
             <div class="question-control">
-                <button @click=${(e) => editQuestion(e, questionData.objectId)} class="input submit action"><i class="fas fa-edit"></i> Edit</button>
+                <button @click=${(e) => editQuestion(e, questionData, questionNumber, ctx)} class="input submit action"><i class="fas fa-edit"></i> Edit</button>
                 <button @click=${(e) => deleteQuestion(e, questionData.objectId)} class="input submit action"><i class="fas fa-trash-alt"></i> Delete</button>
             </div>
             <h3>Question ${questionNumber}</h3>

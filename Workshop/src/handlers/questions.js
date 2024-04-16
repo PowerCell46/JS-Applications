@@ -82,7 +82,7 @@ export function submitQuestion(event, ctx) {
         const divWrapper = document.createElement("div");
         render(editQuestionTemplate({objectId: data.objectId, text, answers}, questionNumber), divWrapper);
         
-        const children = Array.from(divWrapper.querySelector("article").childNodes)
+        const children = Array.from(divWrapper.querySelector("article").childNodes);
         article.innerHTML = '';
         children.forEach(child => article.appendChild(child));
     })
@@ -90,8 +90,17 @@ export function submitQuestion(event, ctx) {
 }
 
 
-export function editQuestion(e, id) {
-    console.log(id);
+export function editQuestion(event, questionData, questionNumber, ctx) {
+    const article = event.currentTarget.parentNode.parentNode.parentNode;
+    
+    const divWrapper = document.createElement("div");
+    render(createQuestionTemplate(1, ctx, questionData), divWrapper);
+    divWrapper.querySelector("#add-question-article").remove();
+    divWrapper.querySelector("h3").textContent = `Question ${questionNumber}`;
+
+    const children = Array.from(divWrapper.querySelector(".editor-question").childNodes);
+    article.innerHTML = '';
+    children.forEach(child => article.appendChild(child));
 }
 
 
