@@ -92,7 +92,10 @@ export function createQuestionTemplate(numberOfQuestions, ctx, data) {
                 <textarea class="input editor-input editor-text" name="text"
                     placeholder="Enter question">${data ? data.text : ""}</textarea>
                 <div id="question-options">
-                    ${[0, 1, 2].map((i) => createQuestionOptionsTemplate(i, index))}
+                    ${data ? 
+                        data.answers.map((a, i) => editQuestionOptionsTemplate(a, i, data.correctIndex)) :
+                        [0, 1, 2].map((i) => createQuestionOptionsTemplate(i, index))
+                    }
                 </div>
                 <div class="editor-input">
                     <button @click=${(e) => addQuestionOption(e, index)} class="input submit action">
@@ -153,4 +156,18 @@ export function createQuestionOptionsTemplate(i, index) {
             <button @click=${(e) => deleteQuestionOption(e, i)} class="input submit action"><i class="fas fa-trash-alt"></i></button>
         </div>
         `;
+}
+
+
+function editQuestionOptionsTemplate(answer, currentIndex, correctIndex) {
+    return html`
+        <div class="editor-input">
+            <label class="radio">
+                <input ?checked=${currentIndex === correctIndex} class="input" type="radio" name="correct-answer" value="${currentIndex}" />
+                <i class="fas fa-check-circle"></i>
+            </label>
+            <input class="input" type="text" value=${answer} name="answer-${currentIndex}" />
+            <button @click=${(e) => deleteQuestionOption(e, currentIndex)} class="input submit action"><i class="fas fa-trash-alt"></i></button>
+        </div>
+    `;
 }
