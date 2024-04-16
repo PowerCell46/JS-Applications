@@ -1,6 +1,6 @@
 import {html, render} from '../../node_modules/lit-html/lit-html.js';
 import { main, topics, urlEndpoints } from '../constants.js';
-import { addQuestion, addQuestionOption, cancelQuestion, deleteQuestionOption, submitQuestion} from '../handlers/questions.js';
+import { addQuestion, addQuestionOption, deleteQuestionOption, submitQuestion} from '../handlers/questions.js';
 import { get } from '../utils/http.js';
 
 

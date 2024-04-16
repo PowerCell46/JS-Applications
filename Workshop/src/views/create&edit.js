@@ -1,6 +1,6 @@
 import {html, render} from '../../node_modules/lit-html/lit-html.js';
 import { main, urlEndpoints } from '../constants.js';
-import { addQuestion, addQuestionOption, deleteQuestion, deleteQuestionOption, editQuestion } from '../handlers/questions.js';
+import { addQuestion, addQuestionOption, deleteQuestion, deleteQuestionOption, editQuestion, submitQuestion } from '../handlers/questions.js';
 import { submitQuiz } from '../handlers/quizzes.js';
 import { get } from '../utils/http.js';
 
@@ -29,7 +29,7 @@ export function createEditView(ctx) {
     } else { // Create view
         render(createEditViewTemplate(ctx), main);
 
-        render(createQuestionTemplate(1), document.querySelector("#quesions-container"));
+        render(createQuestionTemplate(1, ctx), document.querySelector("#quesions-container"));
     }
 
 } 
@@ -76,13 +76,13 @@ function createEditViewTemplate(ctx, quizData) {
 }
 
 
-export function createQuestionTemplate(numberOfQuestions) {
+export function createQuestionTemplate(numberOfQuestions, ctx) {
     return Array.from({ length: numberOfQuestions }, (_, index) => index + 1)
     .map(index => html`
     <article class="editor-question">
             <div class="layout">
                 <div class="question-control">
-                    <button class="input submit action"><i class="fas fa-check-double"></i>
+                    <button @click=${(e) => submitQuestion(e, ctx)} class="input submit action"><i class="fas fa-check-double"></i>
                         Save</button>
                     <button class="input submit action"><i class="fas fa-times"></i> Cancel</button>
                 </div>
@@ -104,7 +104,7 @@ export function createQuestionTemplate(numberOfQuestions) {
         </article>
         <article id="add-question-article" class="editor-question">
             <div class="editor-input">
-                <button @click=${() => addQuestion()} class="input submit action">
+                <button @click=${() => addQuestion(ctx)} class="input submit action">
                     <i class="fas fa-plus-circle"></i>
                     Add question
                 </button>
@@ -114,13 +114,13 @@ export function createQuestionTemplate(numberOfQuestions) {
 } 
 
 
-function editQuestionTemplate(questionData, questionNumber) {
+export function editQuestionTemplate(questionData, questionNumber) {
     return html`
     <article class="editor-question">
         <div class="layout">
             <div class="question-control">
                 <button @click=${() => editQuestion(questionData.objectId)} class="input submit action"><i class="fas fa-edit"></i> Edit</button>
-                <button @click=${() => deleteQuestion(questionData.objectId)} class="input submit action"><i class="fas fa-trash-alt"></i> Delete</button>
+                <button @click=${(e) => deleteQuestion(e, questionData.objectId)} class="input submit action"><i class="fas fa-trash-alt"></i> Delete</button>
             </div>
             <h3>Question ${questionNumber}</h3>
         </div>
@@ -145,7 +145,7 @@ export function createQuestionOptionsTemplate(i, index) {
         <div class="editor-input">
 
             <label class="radio">
-                <input class="input" type="radio" name="question-${index}" value="${i}" />
+                <input class="input" type="radio" name="correct-answer" value="${i}" />
                 <i class="fas fa-check-circle"></i>
             </label>
 

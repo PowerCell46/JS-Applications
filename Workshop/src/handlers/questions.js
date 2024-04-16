@@ -1,14 +1,14 @@
 import { urlEndpoints } from "../constants.js";
-import { post } from "../utils/http.js";
-import { createQuestionOptionsTemplate, createQuestionTemplate } from "../views/create&edit.js";
+import { del, post } from "../utils/http.js";
+import { createQuestionOptionsTemplate, createQuestionTemplate, editQuestionTemplate } from "../views/create&edit.js";
 import { finishedQuestionContent } from "../views/create.js";
-import {render} from "../../node_modules/lit-html/lit-html.js";
+import {render } from "../../node_modules/lit-html/lit-html.js";
 
 
-export function addQuestion() {
+export function addQuestion(ctx) {
     document.querySelector("#add-question-article").remove(); // remove add question article section
     const numberOfQuestions = document.querySelector("#quesions-container").querySelectorAll(".editor-question").length + 1;
-    render(createQuestionTemplate(numberOfQuestions), document.querySelector("#quesions-container"));
+    render(createQuestionTemplate(numberOfQuestions, ctx), document.querySelector("#quesions-container"));
 }
 
 
@@ -44,7 +44,7 @@ export function addQuestionOption(event, index) {
 }
 
 
-export function submitQuestion(event, currentQuestionNumber, ctx) {
+export function submitQuestion(event, ctx) {
     const quizId = ctx.quizId;
     
     if (!quizId) {
@@ -56,27 +56,27 @@ export function submitQuestion(event, currentQuestionNumber, ctx) {
     let answers = [];
 
     for (let item of Object.keys(Object.fromEntries(data))) {
-        if (item === "text") {
+        if (item === "text") { // Question Title
             var text = Object.fromEntries(data)[item];
-        } else if (item === "correct-answer") {
+        } else if (item === "correct-answer") { // Correct Answer Index 
             var correctIndex = Number(Object.fromEntries(data)["correct-answer"]);
-        } else {
+        } else { // Options
             answers.push(Object.fromEntries(data)[item]);
         }
     }
-    
+
     const article = event.currentTarget.parentNode.parentNode.parentNode;
+    const questionNumber = Number(article.querySelector("h3").textContent.split(" ")[1]);
     post(urlEndpoints.question, {text, answers, correctIndex, quizId})
     .then(data => {
-        article.innerHTML = finishedQuestionContent(text, answers, currentQuestionNumber, data.objectId);
+        const divWrapper = document.createElement("div");
+        render(editQuestionTemplate({objectId: data.objectId, text, answers}, questionNumber), divWrapper);
+        
+        const children = Array.from(divWrapper.querySelector("article").childNodes)
+        article.innerHTML = '';
+        children.forEach(child => article.appendChild(child));
     })
     .catch(err => console.error(err));
-}
-
-
-export function cancelQuestion(event) {
-    // there is a problem with the indexing of the rest of the questions
-    event.target.parentNode.parentNode.parentNode.remove();
 }
 
 
@@ -84,6 +84,17 @@ export function editQuestion(id) {
     console.log(id);
 }
 
-export function deleteQuestion(id) {
-    console.log(id);
+
+export function deleteQuestion(event, id) {
+    del(`${urlEndpoints.question}/${id}`)
+    .then(data => {
+        const currentArticle = event.target.parentNode.parentNode.parentNode;
+        const questionNumber = Number(currentArticle.querySelector("h3").textContent.split(" ")[1]);
+        currentArticle.remove();
+    
+        [...document.querySelectorAll("h3")]
+        .filter(h3 => Number(h3.textContent.split(" ")[1]) > questionNumber)
+        .forEach(h3 => h3.textContent = `Question ${Number(h3.textContent.split(" ")[1]) - 1}`);
+    })
+    .catch(err => console.error(err));
 }
