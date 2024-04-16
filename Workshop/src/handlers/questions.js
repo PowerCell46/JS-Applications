@@ -12,10 +12,20 @@ export function addQuestion(ctx) {
 }
 
 
-export function deleteQuestionOption(event) {
+export function deleteQuestionOption(event, currentIndex) {
     event.preventDefault();
-    console.log("DELETE");
-    // event.currentTarget.parentNode.remove();
+
+    const currentOption = event.currentTarget.parentNode;
+
+    [...currentOption.parentNode.querySelectorAll("input[type='text']")]
+    .filter(input => Number(input.name.split("-")[1]) > currentIndex)
+    .forEach(input => input.name = `answer-${Number(input.name.split("-")[1]) - 1}`);
+
+    [...currentOption.parentNode.querySelectorAll("input[type='radio']")]
+    .filter(input => Number(input.value) > currentIndex)
+    .forEach(input => input.value = Number(input.value) - 1);
+
+    currentOption.remove();
 }
 
 
@@ -80,7 +90,7 @@ export function submitQuestion(event, ctx) {
 }
 
 
-export function editQuestion(id) {
+export function editQuestion(e, id) {
     console.log(id);
 }
 

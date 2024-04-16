@@ -119,7 +119,7 @@ export function editQuestionTemplate(questionData, questionNumber) {
     <article class="editor-question">
         <div class="layout">
             <div class="question-control">
-                <button @click=${() => editQuestion(questionData.objectId)} class="input submit action"><i class="fas fa-edit"></i> Edit</button>
+                <button @click=${(e) => editQuestion(e, questionData.objectId)} class="input submit action"><i class="fas fa-edit"></i> Edit</button>
                 <button @click=${(e) => deleteQuestion(e, questionData.objectId)} class="input submit action"><i class="fas fa-trash-alt"></i> Delete</button>
             </div>
             <h3>Question ${questionNumber}</h3>
@@ -150,7 +150,7 @@ export function createQuestionOptionsTemplate(i, index) {
             </label>
 
             <input class="input" type="text" name="answer-${i}" />
-            <button @click=${deleteQuestionOption} class="input submit action"><i class="fas fa-trash-alt"></i></button>
+            <button @click=${(e) => deleteQuestionOption(e, i)} class="input submit action"><i class="fas fa-trash-alt"></i></button>
         </div>
         `;
 }
