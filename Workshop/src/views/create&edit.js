@@ -3,6 +3,7 @@ import { main, urlEndpoints } from '../constants.js';
 import { addQuestion, addQuestionOption, cancelQuestion, deleteQuestion, deleteQuestionOption, editQuestion, submitQuestion } from '../handlers/questions.js';
 import { submitQuiz } from '../handlers/quizzes.js';
 import { get } from '../utils/http.js';
+import page from '../../node_modules/page/page.mjs';
 
 
 export function createEditView(ctx) {
@@ -13,10 +14,13 @@ export function createEditView(ctx) {
         get(`${urlEndpoints.quiz}/${quizId}`)
         .then(quizData => {
 
+        if (!(quizData.creatorId === ctx.userId)) {
+            page.redirect("/");
+        }
+
         get(urlEndpoints.question)
         .then(questionsData => {
             const questions = Object.values(questionsData)[0].filter(question => question.quizId === quizId);
-            quizData.questions = questions; // do i need it?
 
             render(createEditViewTemplate(ctx, quizData), main);
 
@@ -145,6 +149,7 @@ export function editQuestionTemplate(questionData, questionNumber, ctx) {
     </article>
     `;
 }
+
 
 export function createQuestionOptionsTemplate(i, index) {
     return html`

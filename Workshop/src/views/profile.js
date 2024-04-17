@@ -83,8 +83,11 @@ export function profileView(ctx) {
                         <article class="preview layout">
                             <div class="right-col">
                                 <a class="action cta" href="/details/${q.objectId}">View Quiz</a>
+                            ${q.creatorId === ctx.userId ? html`
                                 <a class="action cta" href="/create/${q.objectId}"><i class="fas fa-edit"></i></a>
                                 <a class="action cta" @click=${(e) => deleteQuiz(e, q.objectId)}><i class="fas fa-trash-alt"></i></a>
+                            ` : null
+                            }
                             </div>
                             <div class="left-col">
                                 <h3><a class="quiz-title-link" href="/details/${q.objectId}">${q.title}</a></h3>
@@ -110,5 +113,3 @@ export function profileView(ctx) {
         });
     });   
 }
-
-// Buttons only available only if the user is trying to access his profile

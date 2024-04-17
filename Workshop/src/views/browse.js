@@ -16,25 +16,26 @@ export function browseView(ctx) {
             get(urlEndpoints.solution)
             .then(data => {
                 const solutions = Object.values(data)[0];
-            const view = html`
-            <section id="browse">
-                ${filterHeader}
+                const view = html`
+                    <section id="browse">
+                        ${filterHeader}
 
-                <div class="pad-large alt-page">
+                        <div class="pad-large alt-page">
 
-                ${Object.values(quizzes)[0]
-                .reverse()
-                .map(q => quizPreviewArticle(q, 
-                    questions.filter(question => question.quizId === q.objectId).length,
-                    solutions.filter(s => s.quiz === q.objectId).length
-                ))
-                }
-                </div>
-            </section>
-            `;
+                        ${Object.values(quizzes)[0]
+                        .reverse()
+                        .map(q => quizPreviewArticle(q, 
+                            questions.filter(question => question.quizId === q.objectId).length,
+                            solutions.filter(s => s.quiz === q.objectId).length
+                        ))
+                        }
+                        </div>
+                    </section>
+                `;
 
-            render(view, main);
-                    });
+                render(view, main);
+                    
                 });
             });
+        });
 }

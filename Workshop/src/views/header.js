@@ -12,8 +12,8 @@ export function loadHeader(ctx, next) {
             <a class="nav-link" href="/browse">Browse</a>
             ${ctx.isAuthenticated ? html`
                 <div id="user-nav">
-                    <a class="nav-link" href="/create/Z86afuRxfI">Create</a>
-                    <a class="nav-link profile-link" href="/create/none"><i class="fas fa-user-circle"></i></a>
+                    <a class="nav-link" href="/create/none">Create</a>
+                    <a class="nav-link profile-link" href="/profile/${ctx.userId}"><i class="fas fa-user-circle"></i></a>
                     <a id="logoutBtn" class="nav-link" @click=${logoutHandler}>Logout</a>
                 </div>
             ` : html`
@@ -28,22 +28,4 @@ export function loadHeader(ctx, next) {
     render(view, header);
 
     next();
-}
-
-const a = {
-    "objectId": "m68BuoEXAl",
-    "username": "PowerCell46",
-    "email": "makotsevo.fan@gmail.com",
-    "createdAt": "2024-04-10T21:41:06.405Z",
-    "updatedAt": "2024-04-10T21:41:06.405Z",
-    "ACL": {
-        "*": {
-            "read": true
-        },
-        "m68BuoEXAl": {
-            "read": true,
-            "write": true
-        }
-    },
-    "sessionToken": "r:d81c732dbb263e4a708c8f65294ca4d7"
 }
