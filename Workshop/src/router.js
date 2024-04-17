@@ -4,7 +4,6 @@ import { authForbidden } from './middlewares/authRequired.js';
 import { authMiddleware } from './middlewares/authentication.js';
 import { browseView } from './views/browse.js';
 import { createEditView } from './views/create&edit.js';
-import { createView } from './views/create.js';
 import { detailsView } from './views/details.js';
 import { loadHeader } from './views/header.js';
 import { homeView } from './views/home.js';

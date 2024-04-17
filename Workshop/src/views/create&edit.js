@@ -1,6 +1,6 @@
 import {html, render} from '../../node_modules/lit-html/lit-html.js';
 import { main, urlEndpoints } from '../constants.js';
-import { addQuestion, addQuestionOption, deleteQuestion, deleteQuestionOption, editQuestion, submitQuestion } from '../handlers/questions.js';
+import { addQuestion, addQuestionOption, cancelQuestion, deleteQuestion, deleteQuestionOption, editQuestion, submitQuestion } from '../handlers/questions.js';
 import { submitQuiz } from '../handlers/quizzes.js';
 import { get } from '../utils/http.js';
 
@@ -22,7 +22,7 @@ export function createEditView(ctx) {
 
             const editQuestions = questions.map((question, index) => editQuestionTemplate(question, (index + 1), ctx));
 
-            render(editQuestions, document.querySelector("#quesions-container"));
+            render([...editQuestions, addQuestionTemplate(ctx)], document.querySelector("#quesions-container"));            
         });
     });
 
@@ -84,11 +84,13 @@ export function createQuestionTemplate(numberOfQuestions, ctx, data) {
                 <div class="question-control">
                     <button @click=${(e) => submitQuestion(e, ctx)} class="input submit action"><i class="fas fa-check-double"></i>
                         Save</button>
-                    <button class="input submit action"><i class="fas fa-times"></i> Cancel</button>
+                    <button @click=${(e) => cancelQuestion(e, data)} class="input submit action"><i class="fas fa-times"></i> Cancel</button>
                 </div>
                 <h3>Question ${index}</h3>
             </div>
             <form>
+                ${data ? html`<textarea style="display: none;" name="questionId">${data.objectId}</textarea>` : null}
+                
                 <textarea class="input editor-input editor-text" name="text"
                     placeholder="Enter question">${data ? data.text : ""}</textarea>
                 <div id="question-options">
@@ -140,7 +142,8 @@ export function editQuestionTemplate(questionData, questionNumber, ctx) {
             )}
         </div>
         </form>
-    </article>`
+    </article>
+    `;
 }
 
 export function createQuestionOptionsTemplate(i, index) {
@@ -171,3 +174,15 @@ function editQuestionOptionsTemplate(answer, currentIndex, correctIndex) {
         </div>
     `;
 }
+
+
+const addQuestionTemplate = (ctx) => html`
+    <article id="add-question-article" class="editor-question">
+        <div class="editor-input">
+            <button @click=${() => addQuestion(ctx, true)} class="input submit action">
+                <i class="fas fa-plus-circle"></i>
+                Add question
+            </button>
+        </div>
+    </article>
+`;

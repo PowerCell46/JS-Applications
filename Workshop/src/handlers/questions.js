@@ -1,14 +1,47 @@
 import { urlEndpoints } from "../constants.js";
-import { del, post } from "../utils/http.js";
-import { createQuestionOptionsTemplate, createQuestionTemplate, editQuestionTemplate } from "../views/create&edit.js";
-import { finishedQuestionContent } from "../views/create.js";
+import { del, post, put } from "../utils/http.js";
+import { createQuestionTemplate, editQuestionTemplate } from "../views/create&edit.js";
 import {render } from "../../node_modules/lit-html/lit-html.js";
 
 
-export function addQuestion(ctx) {
+export function addQuestion(ctx, edit) {
     document.querySelector("#add-question-article").remove(); // remove add question article section
-    const numberOfQuestions = document.querySelector("#quesions-container").querySelectorAll(".editor-question").length + 1;
-    render(createQuestionTemplate(numberOfQuestions, ctx), document.querySelector("#quesions-container"));
+    const editorQuestions = document.querySelector("#quesions-container").querySelectorAll(".editor-question");
+    const numberOfQuestions = editorQuestions.length > 0 ? editorQuestions.length + 1 : 1;
+
+    if (edit) {
+        const container = document.createElement('div');
+        render(createQuestionTemplate(numberOfQuestions, ctx), container);
+        
+        let articles = container.querySelectorAll("article");
+        
+        articles = Array.from(articles).slice(-2);
+        articles[0].querySelectorAll("button").forEach(button => {
+            console.log(button.textContent.trim());
+            
+            if (button.textContent.trim() === "Save") {
+                button.addEventListener("click", (e) => submitQuestion(e, ctx));
+                console.log("ADDEDc");
+
+            } else if (button.textContent.trim() === "Cancel") {
+                button.addEventListener("click", cancelQuestion);
+                console.log("ADDEDc");
+
+            } else if (button.textContent.trim() === "Add answer") {
+                button.addEventListener("click", (e) => addQuestionOption(e, Number(articles[0].querySelector("h3").textContent.split(" ")[1])));
+                console.log("ADDEDc");
+
+            }
+        });
+
+        document.querySelector("#quesions-container").innerHTML += 
+            `<article class="editor-question">` + articles[0].innerHTML + `</article>`;
+        document.querySelector("#quesions-container").innerHTML += 
+            `<article id="add-question-article" class="editor-question">` + articles[1].innerHTML + `</article>`;
+
+    } else {
+        render(createQuestionTemplate(numberOfQuestions, ctx), document.querySelector("#quesions-container"));
+    }
 }
 
 
@@ -55,7 +88,7 @@ export function addQuestionOption(event, index) {
 
 
 export function submitQuestion(event, ctx) {
-    const quizId = ctx.quizId;
+    const quizId = ctx.params.id;
     
     if (!quizId) {
         return alert("Specify to which quiz is the question related to!");
@@ -70,6 +103,8 @@ export function submitQuestion(event, ctx) {
             var text = Object.fromEntries(data)[item];
         } else if (item === "correct-answer") { // Correct Answer Index 
             var correctIndex = Number(Object.fromEntries(data)["correct-answer"]);
+        } else if (item === "questionId") {
+            var questionId = Object.fromEntries(data)[item];
         } else { // Options
             answers.push(Object.fromEntries(data)[item]);
         }
@@ -77,16 +112,31 @@ export function submitQuestion(event, ctx) {
 
     const article = event.currentTarget.parentNode.parentNode.parentNode;
     const questionNumber = Number(article.querySelector("h3").textContent.split(" ")[1]);
-    post(urlEndpoints.question, {text, answers, correctIndex, quizId})
-    .then(data => {
-        const divWrapper = document.createElement("div");
-        render(editQuestionTemplate({objectId: data.objectId, text, answers}, questionNumber), divWrapper);
-        
-        const children = Array.from(divWrapper.querySelector("article").childNodes);
-        article.innerHTML = '';
-        children.forEach(child => article.appendChild(child));
-    })
-    .catch(err => console.error(err));
+
+    if (questionId) {
+        put(`${urlEndpoints.question}/${questionId}`, {text, answers, correctIndex, quizId})
+        .then(data => {
+            const divWrapper = document.createElement("div");
+            render(editQuestionTemplate({objectId: data.objectId, text, answers}, questionNumber), divWrapper);
+            
+            const children = Array.from(divWrapper.querySelector("article").childNodes);
+            article.innerHTML = '';
+            children.forEach(child => article.appendChild(child));
+        })
+        .catch(err => console.error(err));
+
+    } else {
+        post(urlEndpoints.question, {text, answers, correctIndex, quizId})
+        .then(data => {
+            const divWrapper = document.createElement("div");
+            render(editQuestionTemplate({objectId: data.objectId, text, answers}, questionNumber), divWrapper);
+            
+            const children = Array.from(divWrapper.querySelector("article").childNodes);
+            article.innerHTML = '';
+            children.forEach(child => article.appendChild(child));
+        })
+        .catch(err => console.error(err));
+    }
 }
 
 
@@ -116,4 +166,31 @@ export function deleteQuestion(event, id) {
         .forEach(h3 => h3.textContent = `Question ${Number(h3.textContent.split(" ")[1]) - 1}`);
     })
     .catch(err => console.error(err));
+}
+
+
+export function cancelQuestion(event, data) {
+    
+    if (data) {
+        const article = event.currentTarget.parentNode.parentNode.parentNode;
+        const questionNumber = Number(article.querySelector("h3").textContent.split(" ")[1]);
+
+        const divWrapper = document.createElement("div");
+        render(editQuestionTemplate(data, questionNumber), divWrapper);
+        
+        const children = Array.from(divWrapper.querySelector("article").childNodes);
+        article.innerHTML = '';
+        children.forEach(child => article.appendChild(child));
+
+    } else {
+        const currentArticle = event.currentTarget.parentNode.parentNode.parentNode;
+
+        const questionNumber = Number(currentArticle.querySelector("h3").textContent.split(" ")[1]);
+        currentArticle.remove();
+    
+        [...document.querySelectorAll("h3")]
+        .filter(h3 => Number(h3.textContent.split(" ")[1]) > questionNumber)
+        .forEach(h3 => h3.textContent = `Question ${Number(h3.textContent.split(" ")[1]) - 1}`);
+    }
+    // fucks up the add question
 }
