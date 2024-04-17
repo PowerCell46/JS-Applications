@@ -14,30 +14,12 @@ export function addQuestion(ctx, edit) {
         render(createQuestionTemplate(numberOfQuestions, ctx), container);
         
         let articles = container.querySelectorAll("article");
+        let newArticle = document.createElement("article");
+        newArticle.classList.add("editor-question");
         
         articles = Array.from(articles).slice(-2);
-        articles[0].querySelectorAll("button").forEach(button => {
-            console.log(button.textContent.trim());
-            
-            if (button.textContent.trim() === "Save") {
-                button.addEventListener("click", (e) => submitQuestion(e, ctx));
-                console.log("ADDEDc");
-
-            } else if (button.textContent.trim() === "Cancel") {
-                button.addEventListener("click", cancelQuestion);
-                console.log("ADDEDc");
-
-            } else if (button.textContent.trim() === "Add answer") {
-                button.addEventListener("click", (e) => addQuestionOption(e, Number(articles[0].querySelector("h3").textContent.split(" ")[1])));
-                console.log("ADDEDc");
-
-            }
-        });
-
-        document.querySelector("#quesions-container").innerHTML += 
-            `<article class="editor-question">` + articles[0].innerHTML + `</article>`;
-        document.querySelector("#quesions-container").innerHTML += 
-            `<article id="add-question-article" class="editor-question">` + articles[1].innerHTML + `</article>`;
+        articles.forEach(a => a = newArticle.innerHTML = a.innerHTML);
+        articles.forEach(a => document.querySelector("#quesions-container").appendChild(a));
 
     } else {
         render(createQuestionTemplate(numberOfQuestions, ctx), document.querySelector("#quesions-container"));
