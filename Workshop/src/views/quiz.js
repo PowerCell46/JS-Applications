@@ -1,7 +1,7 @@
 import { html, render } from '../../node_modules/lit-html/lit-html.js';
 import { main, urlEndpoints } from '../constants.js';
-import { get, post } from '../utils/http.js';
-import page from '../../node_modules/page/page.mjs';
+import { get } from '../utils/http.js';
+import { submitQuizQuestions } from '../handlers/quizzes.js';
 
 
 export function quizView(ctx) {
@@ -40,7 +40,6 @@ export function quizView(ctx) {
 
 function renderQuizQuestion(questionData, questions, ctx) {
     const questionIndex = questions.indexOf(questionData);
-    // console.log(ctx.userAnswers);
 
     const view = html`
     <p class="q-text">
@@ -169,19 +168,4 @@ function startOver(event, questions, ctx) {
     renderQuizQuestion(questions[0], questions, ctx);
 
     renderQuestionsNavigation(questions, 0, ctx);
-}
-
-
-function submitQuizQuestions(event, questions, ctx) {
-    event.preventDefault();
-
-    let correct = 0;
-    Object.keys(ctx.userAnswers).forEach(index => questions[index].correctIndex === ctx.userAnswers[index] ? correct++ : null);
-    const userId = localStorage.getItem("userId");
-
-    post(urlEndpoints.solution, { correct, answers: ctx.userAnswers, quiz: ctx.params.id, userId})
-    .then(data => {
-        page.redirect(`/summary/${data.objectId}`);
-    })
-    .catch(err => console.error(err));
 }

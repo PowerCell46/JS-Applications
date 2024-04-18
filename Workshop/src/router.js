@@ -18,23 +18,23 @@ page(authMiddleware);
 
 page(loadHeader);
 
-page("/", homeView);
+page("/", homeView); // Home Page
 
-page("/login", loginView);
+page("/login", authForbidden, loginView); // Login
 
-page("/register", registerView);
+page("/register", authForbidden, registerView); // Register
 
-page("/profile/:id", profileView);
+page("/profile/:id", authRequired, profileView); // Profile Page
 
 page("/details/:id", detailsView); // Quiz Details
 
-page("/browse", browseView);
+page("/browse", browseView); // Quizzes Catalog Page
 
-page("/quiz/:id", quizView); // Submit Quiz
+page("/quiz/:id", authRequired, quizView); // Submit Quiz
 
-page("/summary/:id", summaryView); // Quiz Result 
+page("/summary/:id", authRequired, summaryView); // Quiz Result 
 
-page("/create/:id", createEditView); // Create / Edit Quiz 
+page("/create/:id", authRequired, createEditView); // Create/Edit Quiz 
 
 
 page.start();

@@ -152,6 +152,7 @@ export function deleteQuestion(event, id) {
 
 
 export function cancelQuestion(event, data) {
+    // Canceling a question and then adding one does not work well 
     
     if (data) {
         const article = event.currentTarget.parentNode.parentNode.parentNode;
@@ -174,5 +175,4 @@ export function cancelQuestion(event, data) {
         .filter(h3 => Number(h3.textContent.split(" ")[1]) > questionNumber)
         .forEach(h3 => h3.textContent = `Question ${Number(h3.textContent.split(" ")[1]) - 1}`);
     }
-    // fucks up the add question
 }

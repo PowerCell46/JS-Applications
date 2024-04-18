@@ -17,7 +17,7 @@ export function profileView(ctx) {
             Object.values(solutionsData)[0]
             .filter(s => s.userId === userId)
             .forEach(s => !Object.keys(userSolutions).includes(s.quiz) || s.correct > userSolutions[s.quiz].correct ? userSolutions[s.quiz] = s : null);
-        
+
             get(urlEndpoints.quiz)
             .then(data => {
                 const quizzes = Object.values(data)[0];
@@ -27,7 +27,7 @@ export function profileView(ctx) {
                     const questions = Object.values(data)[0];
                     
                     const view = html`
-    <section id="profile">
+            <section id="profile">
                 <header class="pad-large">
                     <h1>Profile Page</h1>
                 </header>
@@ -44,6 +44,7 @@ export function profileView(ctx) {
                             ${userData.email}
                         </p>
                         <h2>Your Quiz Results</h2>
+
                         <table class="quiz-results">
                             <tbody>
                                 ${Object.values(userSolutions).map(solution => {
@@ -51,14 +52,14 @@ export function profileView(ctx) {
                                 const currentQuestions = questions.filter(q => q.quizId === quiz.objectId);
                                 let date = solution.createdAt.split("-");
                                 date = `${date[2][0]}${date[2][1]}.${date[1]}.${date[0]}`;
-    
+                                    
                                 return html`
-                                <tr class="results-row">
-                                    <td class="cell-1">${date}</td>
-                                    <td class="cell-2"><a href="/details/${quiz.objectId}">${quiz.title}</a></td>
-                                    <td class="cell-3 s-correct">${(solution.correct / currentQuestions.length * 100).toFixed(2)}%</td>
-                                    <td class="cell-4 s-correct">${solution.correct}/${currentQuestions.length} correct answers</td>
-                                </tr>
+                                    <tr class="results-row">
+                                        <td class="cell-1">${date}</td>
+                                        <td class="cell-2"><a href="/details/${quiz.objectId}">${quiz.title}</a></td>
+                                        <td class="cell-3 s-correct">${(solution.correct / currentQuestions.length * 100).toFixed(2)}%</td>
+                                        <td class="cell-4 s-correct">${solution.correct}/${currentQuestions.length} correct answers</td>
+                                    </tr>
                                 `})}
                                 
                             </tbody>
